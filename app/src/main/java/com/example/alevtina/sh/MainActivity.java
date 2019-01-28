@@ -1,42 +1,49 @@
 package com.example.alevtina.sh;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static int countRecd = 0, countSpent = 0;
-    private Button toAddRect, toAddSpent;
-    private AddRecdActivity addRecdActivity;
-    private AddSpentActivity addSpentActivity;
-    private static TextView countRecdView, countSpentView, resultView;
+    private BottomNavigationView bottomNavigationView;
     private DatabaseHelper mDBHelper;
     public static SQLiteDatabase mDb;
-    private RecyclerView recyclerView;
-    private static MainAdapter adapter;
-    public static ArrayList<Product> selectProducts = new ArrayList<>();
+    final static int ID_FRAGMENT = R.id.frgmCont;
+    public static int user_age, user_height, user_weight = 1, user_gender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        countRecdView = (TextView)findViewById(R.id.countrecd);
-        countSpentView = (TextView)findViewById(R.id.countspent);
-        resultView = (TextView) findViewById(R.id.result);
 
         mDBHelper = new DatabaseHelper(this);
 
@@ -52,71 +59,114 @@ public class MainActivity extends AppCompatActivity {
             throw mSQLException;
         }
 
-        adapter = new MainAdapter(selectProducts, true);
-        recyclerView = findViewById(R.id.mainrecyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-
-        SetStats();
-        addRecdActivity = new AddRecdActivity();
-        addSpentActivity = new AddSpentActivity();
-        ListenerOnButton();
-
-    }
-
-//    public void read(){
-//        try {
-//            FileInputStream fileIn = openFileInput("productsdb.txt");
-//            InputStreamReader reader = new InputStreamReader(fileIn);
-//            BufferedReader buffer = new BufferedReader(reader);
-//            String line;
-//            while ((line = buffer.readLine()) != null) {
-//                hyi = line;
-//                String[] str = line.split(" ");
-//                String key = "";
-//                for (int i = 0; i < str.length - 1; i++) {
-//                    key += str[i];
-//                }
-//                productsDB.put(key, Integer.parseInt(str[str.length - 1]));
-//            }
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-    public static void SetStats() {
-        adapter.notifyDataSetChanged();
-        countRecd = 0;
-        for (int i = 0; i < selectProducts.size(); i++) {
-
+        try {
+            InputStreamReader input = new InputStreamReader(openFileInput("save_dats"), "utf8");
+            user_weight = input.read();
+            user_height = input.read();
+            user_age = input.read();
+            user_gender = input.read();
+            int i=input.read();
+            String str = "";
+            while(i != -1 && (char)i != 's'){
+                if (((char)i) == 'f') {
+                    String[] sp = str.split(" ");
+                    String name = "";
+                    for (int j = 0; j < sp.length - 1; j++) {
+                        if (j > 0) name += " ";
+                        name += sp[j];
+                    }
+                    int gramm = Integer.parseInt(sp[sp.length - 1]);
+                    SecondFragment.selectProducts.add(new Product(GetKallIsDB(name,true), name, gramm));
+                    str += input.read();
+                    str = "";
+                } else {
+                    str += (char)i;
+                }
+                i = input.read();
+            }
+            if ((char)i == 's') {
+                i = input.read();
+                while(i != -1){
+                    if (((char)i) == 'f') {
+                        String[] sp = str.split(" ");
+                        String name = "";
+                        for (int j = 0; j < sp.length - 1; j++) {
+                            if (j > 0) name += " ";
+                            name += sp[j];
+                        }
+                        int gramm = Integer.parseInt(sp[sp.length - 1]);
+                        SecondFragment.selectExercises.add(new Product(GetKallIsDB(name,false), name, gramm));
+                        str = "";
+                    } else {
+                        str += (char)i;
+                    }
+                    i = input.read();
+                }
+            }
+            input.close();
+        } catch (Exception e) {
+            System.out.println("SCHITIVANIE");
+            System.out.println(e.getMessage());
         }
-        countRecdView.setText(Integer.toString(countRecd));
-        countSpentView.setText(Integer.toString(countSpent));
-        resultView.setText(Integer.toString(Math.abs(countRecd - countSpent)));
+
+        if (user_gender == -1) {
+            getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new RegistratorFragment()).commit();
+            findViewById(R.id.navigation_home).setEnabled(false);
+            findViewById(R.id.navigation_recd).setEnabled(false);
+            findViewById(R.id.navigation_spent).setEnabled(false);
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new HomeFragment()).commit();
+        }
+
+        bottomNavigationView = findViewById(R.id.navigation);
+
+        ListenerOnButton();
     }
 
     void ListenerOnButton() {
-        toAddRect = (Button) findViewById(R.id.toAddRect);
-        toAddSpent = (Button) findViewById(R.id.toAddSpent);
-
-        toAddRect.setOnClickListener(
-                new View.OnClickListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public void onClick(View v) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frgmCont, addRecdActivity).commit();
+                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.navigation_home:
+                                getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new HomeFragment()).commit();
+                                HomeFragment.SetStats();
+                                break;
+                            case R.id.navigation_recd:
+                                getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new SecondFragment(true)).commit();
+                                break;
+                            case R.id.navigation_spent:
+                                getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new SecondFragment(false)).commit();
+                                break;
+                        }
+                        return false;
                     }
                 }
         );
+    }
 
-        toAddSpent.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.frgmCont, addSpentActivity).commit();
-                    }
-                }
-        );
+    public static int KallCalculator(int kall, int gramm, boolean flag) {
+        int total;
+        if (flag) {
+            total = kall * gramm / 100;
+            return total;
+        } else {
+            total = kall * gramm * user_weight;
+            return total;
+        }
+    }
+
+    int GetKallIsDB(String name, boolean flag) {
+        Cursor cursor;
+        if (flag) {
+            cursor = mDb.rawQuery("SELECT * FROM products WHERE name=\"" + name + "\"", null);
+        } else {
+            cursor = mDb.rawQuery("SELECT * FROM exercises WHERE name=\"" + name + "\"", null);
+        }
+        cursor.moveToFirst();
+        int kall = cursor.getInt(1);
+        cursor.close();
+        return kall;
     }
 }

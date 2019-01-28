@@ -17,10 +17,11 @@ import java.util.HashMap;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
-    private int flag;
+    private boolean flag;
 
     ArrayList<Product> products = new ArrayList<>();
-    HashMap<String, Product> checkproduct = new HashMap<>();
+    HashMap<String, Integer> checkproduct = new HashMap<>();
+    boolean[] checked;
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
         TextView name, kall, attribute;
@@ -37,9 +38,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         }
     }
 
-    public ItemAdapter(ArrayList<Product> products, int flag) {
+    public ItemAdapter(ArrayList<Product> products, boolean flag) {
         this.products = products;
         this.flag = flag;
+        checked = new boolean[products.size()];
     }
 
     @NonNull
@@ -50,24 +52,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ItemViewHolder itemViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ItemViewHolder itemViewHolder, final int i) {
         final Product product = products.get(i);
         final int kallint = product.getkall();
         itemViewHolder.name.setText(product.getname());
-        itemViewHolder.kall.setText(Integer.toString(kallint));
-        if (checkproduct.containsKey(product.getname())) {
-            itemViewHolder.check.setChecked(true);
-        }
-        switch (flag) {
-            case 1:
-                itemViewHolder.attribute.setText("г");
-                itemViewHolder.amt.setText("100");
-                break;
-            case 2:
-                itemViewHolder.attribute.setText("мин");
-                itemViewHolder.amt.setText("10");
-                break;
-        }
+        itemViewHolder.check.setChecked(checked[i]);
         itemViewHolder.amt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -85,32 +74,46 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 if(itemViewHolder.amt.getText().length() == 0) grammint = 0;
                 else
                 grammint = Integer.parseInt(itemViewHolder.amt.getText().toString());
-                switch (flag) {
-                    case 1: itemViewHolder.kall.setText(Integer.toString(kallint * grammint / 100)); break;
-                    case 2: itemViewHolder.kall.setText(Integer.toString(kallint * grammint / 10)); break;
+                if (flag) {
+                    itemViewHolder.kall.setText(Integer.toString(MainActivity.KallCalculator(product.getkall(), grammint, true)));
+                } else {
+                    itemViewHolder.kall.setText(Integer.toString(MainActivity.KallCalculator(product.getkall(), grammint, false)));
                 }
-                if (itemViewHolder.check.isChecked()) {
-                    Product data = new Product(kallint, Integer.parseInt(itemViewHolder.amt.getText().toString()));
-                    checkproduct.put(product.getname(), data);
+                if (checked[i]) {
+                    checkproduct.put(product.getname(), grammint);
                 }
             }
         });
-        itemViewHolder.check.setOnCheckedChangeListener(
-                new CompoundButton.OnCheckedChangeListener() {
+        itemViewHolder.check.setOnClickListener(
+                new View.OnClickListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        Product data = new Product(kallint, Integer.parseInt(itemViewHolder.amt.getText().toString()));
-                        if(isChecked) {
+                    public void onClick(View v) {
+                        checked[i] = itemViewHolder.check.isChecked();
+                        if(checked[i]) {
                             if (!checkproduct.containsKey(product.getname())) {
-                                checkproduct.put(product.getname(), data);
+                                checkproduct.put(product.getname(), Integer.parseInt(itemViewHolder.amt.getText().toString()));
                             }
                         } else {
                             if (checkproduct.containsKey(product.getname()))
-                            checkproduct.remove(product.getname());
+                                checkproduct.remove(product.getname());
                         }
+
                     }
                 }
         );
+        if (checkproduct.containsKey(product.getname())) {
+            checked[i] = true;
+            itemViewHolder.amt.setText(Integer.toString(checkproduct.get(product.getname())));
+        } else {
+            checked[i] = false;
+            if (flag) {
+                itemViewHolder.attribute.setText("г");
+                itemViewHolder.amt.setText("100");
+            } else {
+                itemViewHolder.attribute.setText("ч");
+                itemViewHolder.amt.setText("1");
+            }
+        }
     }
 
     @Override

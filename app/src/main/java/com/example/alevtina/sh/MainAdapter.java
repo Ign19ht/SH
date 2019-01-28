@@ -10,20 +10,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
-    private boolean flag;
     ArrayList<Product> products = new ArrayList<>();
+    boolean flag;
 
-    public static class MainViewHolder extends RecyclerView.ViewHolder{
+    public static class MainViewHolder extends RecyclerView.ViewHolder {
 
         TextView name, kall, attribute;
         EditText amt;
-        Button clear;
+        ImageButton clear;
 
         public MainViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -50,13 +52,17 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     @Override
     public void onBindViewHolder(@NonNull final MainViewHolder mainViewHolder, final int i) {
         final Product product = products.get(i);
-        mainViewHolder.name.setText(product.getname());
-        mainViewHolder.kall.setText(product.getkall());
-        mainViewHolder.amt.setText(product.getgramm());
         if (flag) {
             mainViewHolder.attribute.setText("г");
         } else {
-            mainViewHolder.attribute.setText("мин");
+            mainViewHolder.attribute.setText("ч");
+        }
+        if (SecondFragment.visible) {
+            mainViewHolder.clear.setVisibility(View.VISIBLE);
+            mainViewHolder.amt.setEnabled(false);
+        } else {
+            mainViewHolder.clear.setVisibility(View.INVISIBLE);
+            mainViewHolder.amt.setEnabled(true);
         }
         mainViewHolder.amt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -72,40 +78,89 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             @Override
             public void afterTextChanged(Editable s) {
                 int grammint;
-                if(mainViewHolder.amt.getText().length() == 0) grammint = 0;
+                int temp;
+                if (mainViewHolder.amt.getText().length() == 0) grammint = 0;
                 else
                     grammint = Integer.parseInt(mainViewHolder.amt.getText().toString());
                 if (flag) {
-                    mainViewHolder.kall.setText(Integer.toString(product.getkall() * grammint / 100));
+                    temp = MainActivity.KallCalculator(product.getkall(), grammint, true);
+                    mainViewHolder.kall.setText(Integer.toString(temp));
                 } else {
-                    mainViewHolder.kall.setText(Integer.toString(product.getkall() * grammint / 10));
+                    temp = MainActivity.KallCalculator(product.getkall(), grammint, false);
+                    mainViewHolder.kall.setText(Integer.toString(temp));
+                }
+                if (SecondFragment.order) {
+                    if (flag) {
+                        SecondFragment.selectProducts.set(i, new Product(product.getkall(), product.getname(), grammint));
+                    } else {
+                        SecondFragment.selectExercises.set(i, new Product(product.getkall(), product.getname(), grammint));
+                    }
+                    try {
+                        OutputStreamWriter output = new OutputStreamWriter(mainViewHolder.itemView.getContext().openFileOutput("save_dats", Context.MODE_PRIVATE), "utf8");
+                        output.write(MainActivity.user_weight);
+                        output.write(MainActivity.user_height);
+                        output.write(MainActivity.user_age);
+                        output.write(MainActivity.user_gender);
+                        for (int i = 0; i < SecondFragment.selectProducts.size(); i++) {
+                            output.write(SecondFragment.selectProducts.get(i).getname() + " ");
+                            output.write(Integer.toString(SecondFragment.selectProducts.get(i).getgramm()) + " f ");
+                        }
+                        for (int i = 0; i < SecondFragment.selectExercises.size(); i++) {
+                            if (i == 0) {
+                                output.write("s");
+                            }
+                            output.write(SecondFragment.selectExercises.get(i).getname() + " ");
+                            output.write(Integer.toString(SecondFragment.selectExercises.get(i).getgramm()) + " f ");
+                        }
+                        output.close();
+                    } catch (Exception e) {
+                        System.out.println("Ошибка");
+                        e.printStackTrace();
+                    }
                 }
             }
         });
-        mainViewHolder.clear.setOnClickListener(new View.OnClickListener() {
+        mainViewHolder.clear.setOnClickListener(
+                new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.selectProducts.remove(i);
-                MainActivity.SetStats();
+                if (flag) {
+                    SecondFragment.selectProducts.remove(i);
+                } else {
+                    SecondFragment.selectExercises.remove(i);
+                }
+                SecondFragment.DataChange();
+                try {
+                    OutputStreamWriter output = new OutputStreamWriter(mainViewHolder.itemView.getContext().openFileOutput("save_dats", Context.MODE_PRIVATE), "utf8");
+                    output.write(MainActivity.user_weight);
+                    output.write(MainActivity.user_height);
+                    output.write(MainActivity.user_age);
+                    output.write(MainActivity.user_gender);
+                    for (int i = 0; i < SecondFragment.selectProducts.size(); i++) {
+                        output.write(SecondFragment.selectProducts.get(i).getname() + " ");
+                        output.write(Integer.toString(SecondFragment.selectProducts.get(i).getgramm()) + " f ");
+                    }
+                    for (int i = 0; i < SecondFragment.selectExercises.size(); i++) {
+                        if (i == 0) {
+                            output.write("s");
+                        }
+                        output.write(SecondFragment.selectExercises.get(i).getname() + " ");
+                        output.write(Integer.toString(SecondFragment.selectExercises.get(i).getgramm()) + " f ");
+                    }
+                    output.close();
+                } catch (Exception e) {
+                    System.out.println("Ошибка");
+                    e.printStackTrace();
+                }
             }
         });
+        mainViewHolder.name.setText(product.getname());
+        mainViewHolder.kall.setText(Integer.toString(product.getkall()));
+        mainViewHolder.amt.setText(Integer.toString(product.getgramm()));
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return products.size();
     }
-
-//    void SetCounts(MainViewHolder mainViewHolder) {
-//        if(flag)
-//        MainActivity.countRecd = 0;
-//        else
-//        MainActivity.countSpent = 0;
-//        for (int i = 0; i < products.size(); i++) {
-//            if (flag)
-//            MainActivity.countRecd += Integer.parseInt(mainViewHolder.kall.getText().toString());
-//            else
-//            MainActivity.countSpent += products.get(i).getkall();
-//        }
-//    }
 }
