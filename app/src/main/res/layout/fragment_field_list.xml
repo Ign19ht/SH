@@ -7,12 +7,12 @@
 
     <Button
         android:id="@+id/find_clear"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:visibility="invisible"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="80dp"
-        android:layout_alignParentEnd="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_toLeftOf="@id/savecheked"
         android:background="@drawable/ic_add_circle_black_24dp"
         android:rotation="45" />
 
@@ -40,7 +40,7 @@
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="10dp"
-        android:background="@drawable/ic_save_black_24dp"
+        android:background="@drawable/ic_done_black_24dp"
         android:textSize="10dp" />
 
     <android.support.v7.widget.RecyclerView

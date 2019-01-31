@@ -51,10 +51,10 @@ public class HomeFragment extends Fragment {
             countRecd = 0;
             countSpent = 0;
         for (int i = 0; i < SecondFragment.selectProducts.size(); i++) {
-            countRecd += MainActivity.KallCalculator(SecondFragment.selectProducts.get(i).getkall(), SecondFragment.selectProducts.get(i).getgramm(), true);
+            countRecd += SupportClass.KallCalculator(SecondFragment.selectProducts.get(i).getkall(), SecondFragment.selectProducts.get(i).getgramm(), true);
         }
         for (int i = 0; i < SecondFragment.selectExercises.size(); i++) {
-            countSpent += MainActivity.KallCalculator(SecondFragment.selectExercises.get(i).getkall(), SecondFragment.selectExercises.get(i).getgramm(), false);
+            countSpent += SupportClass.KallCalculator(SecondFragment.selectExercises.get(i).getkall(), SecondFragment.selectExercises.get(i).getgramm(), false);
         }
     }
 }

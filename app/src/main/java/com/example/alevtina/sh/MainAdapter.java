@@ -83,10 +83,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                 else
                     grammint = Integer.parseInt(mainViewHolder.amt.getText().toString());
                 if (flag) {
-                    temp = MainActivity.KallCalculator(product.getkall(), grammint, true);
+                    temp = SupportClass.KallCalculator(product.getkall(), grammint, true);
                     mainViewHolder.kall.setText(Integer.toString(temp));
                 } else {
-                    temp = MainActivity.KallCalculator(product.getkall(), grammint, false);
+                    temp = SupportClass.KallCalculator(product.getkall(), grammint, false);
                     mainViewHolder.kall.setText(Integer.toString(temp));
                 }
                 if (SecondFragment.order) {
@@ -95,28 +95,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                     } else {
                         SecondFragment.selectExercises.set(i, new Product(product.getkall(), product.getname(), grammint));
                     }
-                    try {
-                        OutputStreamWriter output = new OutputStreamWriter(mainViewHolder.itemView.getContext().openFileOutput("save_dats", Context.MODE_PRIVATE), "utf8");
-                        output.write(MainActivity.user_weight);
-                        output.write(MainActivity.user_height);
-                        output.write(MainActivity.user_age);
-                        output.write(MainActivity.user_gender);
-                        for (int i = 0; i < SecondFragment.selectProducts.size(); i++) {
-                            output.write(SecondFragment.selectProducts.get(i).getname() + " ");
-                            output.write(Integer.toString(SecondFragment.selectProducts.get(i).getgramm()) + " f ");
-                        }
-                        for (int i = 0; i < SecondFragment.selectExercises.size(); i++) {
-                            if (i == 0) {
-                                output.write("s");
-                            }
-                            output.write(SecondFragment.selectExercises.get(i).getname() + " ");
-                            output.write(Integer.toString(SecondFragment.selectExercises.get(i).getgramm()) + " f ");
-                        }
-                        output.close();
-                    } catch (Exception e) {
-                        System.out.println("Ошибка");
-                        e.printStackTrace();
-                    }
+                    SupportClass.DataSave(mainViewHolder.itemView.getContext());
                 }
             }
         });
@@ -130,28 +109,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                     SecondFragment.selectExercises.remove(i);
                 }
                 SecondFragment.DataChange();
-                try {
-                    OutputStreamWriter output = new OutputStreamWriter(mainViewHolder.itemView.getContext().openFileOutput("save_dats", Context.MODE_PRIVATE), "utf8");
-                    output.write(MainActivity.user_weight);
-                    output.write(MainActivity.user_height);
-                    output.write(MainActivity.user_age);
-                    output.write(MainActivity.user_gender);
-                    for (int i = 0; i < SecondFragment.selectProducts.size(); i++) {
-                        output.write(SecondFragment.selectProducts.get(i).getname() + " ");
-                        output.write(Integer.toString(SecondFragment.selectProducts.get(i).getgramm()) + " f ");
-                    }
-                    for (int i = 0; i < SecondFragment.selectExercises.size(); i++) {
-                        if (i == 0) {
-                            output.write("s");
-                        }
-                        output.write(SecondFragment.selectExercises.get(i).getname() + " ");
-                        output.write(Integer.toString(SecondFragment.selectExercises.get(i).getgramm()) + " f ");
-                    }
-                    output.close();
-                } catch (Exception e) {
-                    System.out.println("Ошибка");
-                    e.printStackTrace();
-                }
+                SupportClass.DataSave(mainViewHolder.itemView.getContext());
             }
         });
         mainViewHolder.name.setText(product.getname());

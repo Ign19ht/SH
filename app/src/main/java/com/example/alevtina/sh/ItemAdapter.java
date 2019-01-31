@@ -75,9 +75,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 else
                 grammint = Integer.parseInt(itemViewHolder.amt.getText().toString());
                 if (flag) {
-                    itemViewHolder.kall.setText(Integer.toString(MainActivity.KallCalculator(product.getkall(), grammint, true)));
+                    itemViewHolder.kall.setText(Integer.toString(SupportClass.KallCalculator(product.getkall(), grammint, true)));
                 } else {
-                    itemViewHolder.kall.setText(Integer.toString(MainActivity.KallCalculator(product.getkall(), grammint, false)));
+                    itemViewHolder.kall.setText(Integer.toString(SupportClass.KallCalculator(product.getkall(), grammint, false)));
                 }
                 if (checked[i]) {
                     checkproduct.put(product.getname(), grammint);

@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -26,7 +27,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper mDBHelper;
     public static SQLiteDatabase mDb;
     final static int ID_FRAGMENT = R.id.frgmCont;
-    public static int user_age, user_height, user_weight = 1, user_gender;
+    public static int user_age = 1, user_height = 1, user_weight = 1, user_gender = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,34 +62,47 @@ public class MainActivity extends AppCompatActivity {
             throw mSQLException;
         }
 
+//        try {
+//            OutputStream file = openFileOutput(SupportClass.SAVE_DATA, Context.MODE_PRIVATE);
+//            OutputStreamWriter output = new OutputStreamWriter(file , "utf8");
+//            String text;
+//            output.write(text);
+//            output.close();
+//        } catch (Exception e) {
+//            System.out.println("ERROR IN OUTPUT, MY LORD");
+//        }
+//
+//        try {
+//            InputStream file = openFileInput(SupportClass.SAVE_DATA);
+//            InputStreamReader input = new InputStreamReader(file, "utf8");
+//            BufferedReader buffer = new BufferedReader(input);
+//            String line = buffer.readLine();
+//            System.out.println(line);
+//            line = buffer.readLine();
+//            System.out.println(line);
+//            line = buffer.readLine();
+//            System.out.println(line);
+//            input.close();
+//        } catch (Exception e) {
+//            System.out.println("ERROR IN INPUT, MY LORD");
+//        }
+
         try {
             InputStreamReader input = new InputStreamReader(openFileInput("save_dats"), "utf8");
             user_weight = input.read();
             user_height = input.read();
             user_age = input.read();
             user_gender = input.read();
-            int i=input.read();
-            String str = "";
-            while(i != -1 && (char)i != 's'){
-                if (((char)i) == 'f') {
-                    String[] sp = str.split(" ");
-                    String name = "";
-                    for (int j = 0; j < sp.length - 1; j++) {
-                        if (j > 0) name += " ";
-                        name += sp[j];
-                    }
-                    int gramm = Integer.parseInt(sp[sp.length - 1]);
-                    SecondFragment.selectProducts.add(new Product(GetKallIsDB(name,true), name, gramm));
-                    str += input.read();
-                    str = "";
-                } else {
-                    str += (char)i;
-                }
-                i = input.read();
-            }
-            if ((char)i == 's') {
-                i = input.read();
-                while(i != -1){
+//            String time = "";
+//            for (int i = 0; i < 8; i++) {
+//                time += (char)input.read();
+//            }
+//            if (Integer.parseInt(time) < SupportClass.GetTime()) {
+//                SupportClass.SetDataSaves(this);
+//            } else {
+                int i=input.read();
+                String str = "";
+                while(i != -1 && (char)i != 's'){
                     if (((char)i) == 'f') {
                         String[] sp = str.split(" ");
                         String name = "";
@@ -95,14 +111,34 @@ public class MainActivity extends AppCompatActivity {
                             name += sp[j];
                         }
                         int gramm = Integer.parseInt(sp[sp.length - 1]);
-                        SecondFragment.selectExercises.add(new Product(GetKallIsDB(name,false), name, gramm));
+                        SecondFragment.selectProducts.add(new Product(GetKallIsDB(name,true), name, gramm));
+                        str += input.read();
                         str = "";
                     } else {
                         str += (char)i;
                     }
                     i = input.read();
                 }
-            }
+                if ((char)i == 's') {
+                    i = input.read();
+                    while(i != -1){
+                        if (((char)i) == 'f') {
+                            String[] sp = str.split(" ");
+                            String name = "";
+                            for (int j = 0; j < sp.length - 1; j++) {
+                                if (j > 0) name += " ";
+                                name += sp[j];
+                            }
+                            int gramm = Integer.parseInt(sp[sp.length - 1]);
+                            SecondFragment.selectExercises.add(new Product(GetKallIsDB(name,false), name, gramm));
+                            str = "";
+                        } else {
+                            str += (char)i;
+                        }
+                        i = input.read();
+                    }
+                }
+//            }
             input.close();
         } catch (Exception e) {
             System.out.println("SCHITIVANIE");
@@ -140,21 +176,11 @@ public class MainActivity extends AppCompatActivity {
                                 getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new SecondFragment(false)).commit();
                                 break;
                         }
+                        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                         return false;
                     }
                 }
         );
-    }
-
-    public static int KallCalculator(int kall, int gramm, boolean flag) {
-        int total;
-        if (flag) {
-            total = kall * gramm / 100;
-            return total;
-        } else {
-            total = kall * gramm * user_weight;
-            return total;
-        }
     }
 
     int GetKallIsDB(String name, boolean flag) {

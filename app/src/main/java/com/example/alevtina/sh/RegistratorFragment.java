@@ -107,15 +107,6 @@ public class RegistratorFragment extends Fragment {
         MainActivity.user_height = Integer.parseInt(height.getText().toString());
         MainActivity.user_weight = Integer.parseInt(weight.getText().toString());
         getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new HomeFragment()).commit();
-        try {
-            FileOutputStream output = getActivity().openFileOutput("save_dats", Context.MODE_PRIVATE);
-            output.write(MainActivity.user_weight);
-            output.write(MainActivity.user_height);
-            output.write(MainActivity.user_age);
-            output.write(MainActivity.user_gender);
-            output.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        SupportClass.DataSave(getActivity());
     }
 }

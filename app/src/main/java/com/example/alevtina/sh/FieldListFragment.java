@@ -1,7 +1,6 @@
 package com.example.alevtina.sh;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,13 +11,11 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-
-import java.io.FileNotFoundException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,6 +65,7 @@ public class FieldListFragment extends Fragment {
                     public void onClick(View v) {
                         adapter.checkproduct.clear();
                         getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new SecondFragment(flag)).commit();
+                        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                     }
                 }
         );
@@ -76,10 +74,16 @@ public class FieldListFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        SetSelectList(adapter.checkproduct);
-                        adapter.checkproduct.clear();
-                        SecondFragment.DataChange();
-                        getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new SecondFragment(flag)).commit();
+                        if (adapter.checkproduct.size() > 0) {
+                            SetSelectList(adapter.checkproduct);
+                            adapter.checkproduct.clear();
+                            SecondFragment.DataChange();
+                            getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new SecondFragment(flag)).commit();
+                            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                        } else {
+                            Toast.makeText(getActivity(), "Вы ничего не выбрали!", Toast.LENGTH_SHORT)
+                                    .show();
+                        }
                     }
                 }
         );
