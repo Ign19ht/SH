@@ -1,19 +1,26 @@
 package com.example.alevtina.sh;
 
 import android.content.Context;
+import android.database.Cursor;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class SupportClass {
 
     public static final String SAVE_DATA = "save_dats";
     public static final String SAVE_PRODUCT = "save_products";
-    public static final String SAVE_EXERCISES = "save_exercises";
+    public static final String SAVE_EXERCISE = "save_exercises";
 
     public static int KallCalculator(int kall, int gramm, boolean flag) {
         int total;
@@ -26,13 +33,49 @@ public class SupportClass {
         }
     }
 
+    public static void ReadData(Context context) {
+        try {
+            InputStream file = context.openFileInput(SupportClass.SAVE_DATA);
+            InputStreamReader input = new InputStreamReader(file, "utf8");
+            BufferedReader buffer = new BufferedReader(input);
+            String line = buffer.readLine();
+            ArrayList<Product> list = new ArrayList<>();
+            while (line != null) {
+                list.add(new Product(GetKallIsDB(line)))
+            }
+        } catch (Exception e) {
+        }
+    }
+
     public static void ProductSave(Context context) {
         try {
             OutputStream file = context.openFileOutput(SAVE_PRODUCT, Context.MODE_PRIVATE);
             OutputStreamWriter output = new OutputStreamWriter(file , "utf8");
-
+            for (Map.Entry<String, ArrayList<Product>> list : SecondFragment.selectProducts.entrySet()) {
+                output.write(list.getKey() + "\n");
+                for (Product product : list.getValue()) {
+                    output.write(product.getname() + "\n");
+                    output.write(product.getgramm() + "\n");
+                }
+                output.write("|\n");
+            }
         } catch (Exception e) {
+        }
+    }
 
+    public static void ExerciseSave(Context context) {
+        try {
+            OutputStream file = context.openFileOutput(SAVE_EXERCISE, Context.MODE_PRIVATE);
+            OutputStreamWriter output = new OutputStreamWriter(file , "utf8");
+            for (Map.Entry<String, ArrayList<Product>> list : SecondFragment.selectExercises.entrySet()) {
+                output.write(list.getKey() + "\n");
+                for (Product product : list.getValue()) {
+                    output.write(product.getname() + "\n");
+                    output.write(product.getgramm() + "\n");
+                }
+                output.write("|\n");
+            }
+        } catch (Exception e) {
         }
     }
 
@@ -44,17 +87,6 @@ public class SupportClass {
             output.write(MainActivity.user_height);
             output.write(MainActivity.user_age);
             output.write(MainActivity.user_gender);
-            for (int i = 0; i < SecondFragment.selectProducts.size(); i++) {
-                output.write(SecondFragment.selectProducts.get(i).getname() + " ");
-                output.write(Integer.toString(SecondFragment.selectProducts.get(i).getgramm()) + " f ");
-            }
-            for (int i = 0; i < SecondFragment.selectExercises.size(); i++) {
-                if (i == 0) {
-                    output.write("s");
-                }
-                output.write(SecondFragment.selectExercises.get(i).getname() + " ");
-                output.write(Integer.toString(SecondFragment.selectExercises.get(i).getgramm()) + " f ");
-            }
             output.close();
         } catch (Exception e) {
             System.out.println("Ошибка");
@@ -74,5 +106,18 @@ public class SupportClass {
 
     public static String GetTime() {
         return new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
+    }
+
+    public static int GetKallIsDB(String name, boolean flag) {
+        Cursor cursor;
+        if (flag) {
+            cursor = MainActivity.mDb.rawQuery("SELECT * FROM products WHERE name=\"" + name + "\"", null);
+        } else {
+            cursor = MainActivity.mDb.rawQuery("SELECT * FROM exercises WHERE name=\"" + name + "\"", null);
+        }
+        cursor.moveToFirst();
+        int kall = cursor.getInt(1);
+        cursor.close();
+        return kall;
     }
 }

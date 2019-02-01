@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,10 +28,8 @@ public class SecondFragment extends Fragment {
 
     static boolean flag;
     static boolean visible = false, order = true;
-//    public static HashMap<String, ArrayList<Product>> selectProducts = new HashMap<>();
-    public static ArrayList<Product> selectProducts = new ArrayList<>();
-//    public static HashMap<String, ArrayList<Product>> selectExercises = new HashMap<>();
-    public static ArrayList<Product> selectExercises = new ArrayList<>();
+    public static HashMap<String, ArrayList<Product>> selectProducts = new HashMap<>();
+    public static HashMap<String, ArrayList<Product>> selectExercises = new HashMap<>();
     static RecyclerView recyclerView;
     static private MainAdapter adapter;
     private TextView textView, cancel, deleteAll, date;
@@ -65,9 +64,9 @@ public class SecondFragment extends Fragment {
         date.setText(SupportClass.GetTime());
 
         if (flag) {
-            adapter = new MainAdapter(selectProducts, true);
+            adapter = new MainAdapter(selectProducts.get(SupportClass.GetTime()), true);
         } else {
-            adapter = new MainAdapter(selectExercises, false);
+            adapter = new MainAdapter(selectExercises.get(SupportClass.GetTime()), false);
         }
 
         recyclerView = view.findViewById(R.id.mainrecyclerview);

@@ -182,17 +182,4 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
-
-    int GetKallIsDB(String name, boolean flag) {
-        Cursor cursor;
-        if (flag) {
-            cursor = mDb.rawQuery("SELECT * FROM products WHERE name=\"" + name + "\"", null);
-        } else {
-            cursor = mDb.rawQuery("SELECT * FROM exercises WHERE name=\"" + name + "\"", null);
-        }
-        cursor.moveToFirst();
-        int kall = cursor.getInt(1);
-        cursor.close();
-        return kall;
-    }
 }
