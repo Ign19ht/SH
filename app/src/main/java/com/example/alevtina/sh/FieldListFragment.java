@@ -151,42 +151,23 @@ public class FieldListFragment extends Fragment {
     }
 
     void SetSelectList(HashMap<String, Integer> data) {
-        for (Map.Entry<String, Integer> dat : data.entrySet()) {
-            Cursor cursor;
-            if (flag) {
-                cursor = MainActivity.mDb.rawQuery("SELECT * FROM products WHERE name=\"" + dat.getKey() + "\"", null);
-            } else {
-                cursor = MainActivity.mDb.rawQuery("SELECT * FROM exercises WHERE name=\"" + dat.getKey() + "\"", null);
-            }
-            cursor.moveToFirst();
-            if (flag) {
-                SecondFragment.selectProducts.add(new Product(cursor.getInt(1), dat.getKey(), dat.getValue()));
-            } else {
-                SecondFragment.selectExercises.add(new Product(cursor.getInt(1), dat.getKey(), dat.getValue()));
-            }
-            cursor.close();
+        String time = SupportClass.GetNewDate(SecondFragment.stepProducts);
+        ArrayList<Product> list = new ArrayList<>();
+        if (flag) {
+            list.addAll(SecondFragment.selectProducts.get(time));
+        } else {
+            list.addAll(SecondFragment.selectExercises.get(time));
         }
-//        try {
-//            OutputStreamWriter output = new OutputStreamWriter(getActivity().openFileOutput("save_dats", Context.MODE_PRIVATE), "utf8");
-//            output.write(MainActivity.user_weight);
-//            output.write(MainActivity.user_height);
-//            output.write(MainActivity.user_age);
-//            output.write(MainActivity.user_gender);
-//            for (int i = 0; i < SecondFragment.selectProducts.size(); i++) {
-//                output.write(SecondFragment.selectProducts.get(i).getname() + " ");
-//                output.write(Integer.toString(SecondFragment.selectProducts.get(i).getkall()) + " f ");
-//            }
-//            for (int i = 0; i < SecondFragment.selectExercises.size(); i++) {
-//                if (i == 0) {
-//                    output.write("s ");
-//                }
-//                output.write(SecondFragment.selectExercises.get(i).getname() + " ");
-//                output.write(Integer.toString(SecondFragment.selectExercises.get(i).getkall()) + " f ");
-//            }
-//            output.close();
-//        } catch (Exception e) {
-//            System.out.println("Ошибка");
-//            e.printStackTrace();
-//        }
+        for (Map.Entry<String, Integer> dat : data.entrySet()) {
+            int kall = SupportClass.GetKallIsDB(dat.getKey(), true);
+            list.add(new Product(kall, dat.getKey(), dat.getValue()));
+        }
+        if (flag) {
+            SecondFragment.selectProducts.put(time, list);
+            SupportClass.ProductSave(getActivity());
+        } else {
+            SecondFragment.selectExercises.put(time, list);
+            SupportClass.ExerciseSave(getActivity());
+        }
     }
 }

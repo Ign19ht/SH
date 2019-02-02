@@ -37,12 +37,49 @@ public class SupportClass {
         try {
             InputStream file = context.openFileInput(SupportClass.SAVE_DATA);
             InputStreamReader input = new InputStreamReader(file, "utf8");
+            MainActivity.user_weight = input.read();
+            MainActivity.user_height = input.read();
+            MainActivity.user_age = input.read();
+            MainActivity.user_gender = input.read();
+            input.close();
+        } catch (Exception e) {
+        }
+        try {
+            InputStream file = context.openFileInput(SupportClass.SAVE_PRODUCT);
+            InputStreamReader input = new InputStreamReader(file, "utf8");
             BufferedReader buffer = new BufferedReader(input);
+            String time = buffer.readLine();
             String line = buffer.readLine();
             ArrayList<Product> list = new ArrayList<>();
             while (line != null) {
-                list.add(new Product(GetKallIsDB(line)))
+                if (line == "|") {
+                    SecondFragment.selectProducts.put(time, list);
+                    list.clear();
+                } else {
+                    list.add(new Product(GetKallIsDB(line, true), line , Integer.parseInt(buffer.readLine())));
+                }
+                line = buffer.readLine();
             }
+            buffer.close();
+        } catch (Exception e) {
+        }
+        try {
+            InputStream file = context.openFileInput(SupportClass.SAVE_EXERCISE);
+            InputStreamReader input = new InputStreamReader(file, "utf8");
+            BufferedReader buffer = new BufferedReader(input);
+            String time = buffer.readLine();
+            String line = buffer.readLine();
+            ArrayList<Product> list = new ArrayList<>();
+            while (line != null) {
+                if (line == "|") {
+                    SecondFragment.selectExercises.put(time, list);
+                    list.clear();
+                } else {
+                    list.add(new Product(GetKallIsDB(line, false), line , Integer.parseInt(buffer.readLine())));
+                }
+                line = buffer.readLine();
+            }
+            buffer.close();
         } catch (Exception e) {
         }
     }
@@ -59,6 +96,7 @@ public class SupportClass {
                 }
                 output.write("|\n");
             }
+            output.close();
         } catch (Exception e) {
         }
     }
@@ -75,6 +113,7 @@ public class SupportClass {
                 }
                 output.write("|\n");
             }
+            output.close();
         } catch (Exception e) {
         }
     }

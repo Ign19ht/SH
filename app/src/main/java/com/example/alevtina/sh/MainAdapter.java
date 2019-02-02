@@ -90,12 +90,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                     mainViewHolder.kall.setText(Integer.toString(temp));
                 }
                 if (SecondFragment.order) {
+                    ArrayList<Product>
                     if (flag) {
+
                         SecondFragment.selectProducts.set(i, new Product(product.getkall(), product.getname(), grammint));
                     } else {
                         SecondFragment.selectExercises.set(i, new Product(product.getkall(), product.getname(), grammint));
                     }
-                    SupportClass.DataSave(mainViewHolder.itemView.getContext());
                 }
             }
         });

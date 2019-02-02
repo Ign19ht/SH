@@ -30,6 +30,7 @@ public class SecondFragment extends Fragment {
     static boolean visible = false, order = true;
     public static HashMap<String, ArrayList<Product>> selectProducts = new HashMap<>();
     public static HashMap<String, ArrayList<Product>> selectExercises = new HashMap<>();
+    private ArrayList<Product> selectFields = new ArrayList<>();
     static RecyclerView recyclerView;
     static private MainAdapter adapter;
     private TextView textView, cancel, deleteAll, date;
@@ -64,11 +65,12 @@ public class SecondFragment extends Fragment {
         date.setText(SupportClass.GetTime());
 
         if (flag) {
-            adapter = new MainAdapter(selectProducts.get(SupportClass.GetTime()), true);
+            selectFields.addAll(selectProducts.get(SupportClass.GetTime()));
         } else {
-            adapter = new MainAdapter(selectExercises.get(SupportClass.GetTime()), false);
+            selectFields.addAll(selectExercises.get(SupportClass.GetTime()));
         }
 
+        adapter = new MainAdapter(selectFields, false);
         recyclerView = view.findViewById(R.id.mainrecyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -83,26 +85,66 @@ public class SecondFragment extends Fragment {
     }
 
     void Listener() {
-//        pasteDate.setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        boolean order = true;
-//                        if (flag) {
-//                            if (stepProducts - 1 == 15) order = false;
-//                        } else {
-//                            if (stepExercises - 1 == 15) order = false;
-//                        }
-//                        if (order) {
-//                            if (flag) {
-//                                stepProducts --;
-//                                String today = SupportClass.GetTime();
-//                                int day =
-//                            }
-//                        }
-//                    }
-//                }
-//        );
+        nextDate.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean order = true;
+                        if (flag) {
+                            if (stepProducts + 1 == 8) order = false;
+                        } else {
+                            if (stepExercises + 1 == 8) order = false;
+                        }
+                        if (order) {
+                            if (flag) {
+                                stepProducts ++;
+                                String day = SupportClass.GetNewDate(stepProducts);
+                                date.setText(day);
+                                selectFields.clear();
+                                selectFields.addAll(selectProducts.get(day));
+                                DataChange();
+                            } else {
+                                stepExercises ++;
+                                String day = SupportClass.GetNewDate(stepExercises);
+                                date.setText(day);
+                                selectFields.clear();
+                                selectFields.addAll(selectExercises.get(day));
+                                DataChange();
+                            }
+                        }
+                    }
+                }
+        );
+        pasteDate.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean order = true;
+                        if (flag) {
+                            if (stepProducts - 1 == -15) order = false;
+                        } else {
+                            if (stepExercises - 1 == -15) order = false;
+                        }
+                        if (order) {
+                            if (flag) {
+                                stepProducts --;
+                                String day = SupportClass.GetNewDate(stepProducts);
+                                date.setText(day);
+                                selectFields.clear();
+                                selectFields.addAll(selectProducts.get(day));
+                                DataChange();
+                            } else {
+                                stepExercises --;
+                                String day = SupportClass.GetNewDate(stepExercises);
+                                date.setText(day);
+                                selectFields.clear();
+                                selectFields.addAll(selectExercises.get(day));
+                                DataChange();
+                            }
+                        }
+                    }
+                }
+        );
         addFiled.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
