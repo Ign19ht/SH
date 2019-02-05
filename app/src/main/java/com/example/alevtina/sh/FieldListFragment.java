@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,11 +125,7 @@ public class FieldListFragment extends Fragment {
 
     void SetArrayList() {
         Cursor cursor;
-        if (flag) {
-            cursor = MainActivity.mDb.rawQuery("SELECT * FROM products", null);
-        } else {
-            cursor = MainActivity.mDb.rawQuery("SELECT * FROM exercises", null);
-        }
+        cursor = MainActivity.mDb.rawQuery("SELECT * FROM " + (flag ? "products" : "exercises"), null);
         cursor.moveToFirst();
         if (findName.length() == 0) {
             while (!cursor.isAfterLast()) {
@@ -151,15 +148,24 @@ public class FieldListFragment extends Fragment {
     }
 
     void SetSelectList(HashMap<String, Integer> data) {
-        String time = SupportClass.GetNewDate(SecondFragment.stepProducts);
+        String time;
+        if (flag) {
+            time = SupportClass.GetNewDate(SecondFragment.stepProducts);
+        } else {
+            time = SupportClass.GetNewDate(SecondFragment.stepExercises);
+        }
         ArrayList<Product> list = new ArrayList<>();
         if (flag) {
-            list.addAll(SecondFragment.selectProducts.get(time));
+            if (SecondFragment.selectProducts.containsKey(time)) {
+                list.addAll(SecondFragment.selectProducts.get(time));
+            }
         } else {
-            list.addAll(SecondFragment.selectExercises.get(time));
+            if (SecondFragment.selectExercises.containsKey(time)) {
+                list.addAll(SecondFragment.selectExercises.get(time));
+            }
         }
         for (Map.Entry<String, Integer> dat : data.entrySet()) {
-            int kall = SupportClass.GetKallIsDB(dat.getKey(), true);
+            int kall = SupportClass.GetKallIsDB(dat.getKey(), flag);
             list.add(new Product(kall, dat.getKey(), dat.getValue()));
         }
         if (flag) {

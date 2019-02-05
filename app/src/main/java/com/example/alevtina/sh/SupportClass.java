@@ -56,7 +56,7 @@ public class SupportClass {
                     SecondFragment.selectProducts.put(time, list);
                     list.clear();
                 } else {
-                    list.add(new Product(GetKallIsDB(line, true), line , Integer.parseInt(buffer.readLine())));
+                    list.add(new Product(GetKallIsDB(line, true), line, Integer.parseInt(buffer.readLine())));
                 }
                 line = buffer.readLine();
             }
@@ -75,7 +75,7 @@ public class SupportClass {
                     SecondFragment.selectExercises.put(time, list);
                     list.clear();
                 } else {
-                    list.add(new Product(GetKallIsDB(line, false), line , Integer.parseInt(buffer.readLine())));
+                    list.add(new Product(GetKallIsDB(line, false), line, Integer.parseInt(buffer.readLine())));
                 }
                 line = buffer.readLine();
             }
@@ -87,7 +87,7 @@ public class SupportClass {
     public static void ProductSave(Context context) {
         try {
             OutputStream file = context.openFileOutput(SAVE_PRODUCT, Context.MODE_PRIVATE);
-            OutputStreamWriter output = new OutputStreamWriter(file , "utf8");
+            OutputStreamWriter output = new OutputStreamWriter(file, "utf8");
             for (Map.Entry<String, ArrayList<Product>> list : SecondFragment.selectProducts.entrySet()) {
                 output.write(list.getKey() + "\n");
                 for (Product product : list.getValue()) {
@@ -104,7 +104,7 @@ public class SupportClass {
     public static void ExerciseSave(Context context) {
         try {
             OutputStream file = context.openFileOutput(SAVE_EXERCISE, Context.MODE_PRIVATE);
-            OutputStreamWriter output = new OutputStreamWriter(file , "utf8");
+            OutputStreamWriter output = new OutputStreamWriter(file, "utf8");
             for (Map.Entry<String, ArrayList<Product>> list : SecondFragment.selectExercises.entrySet()) {
                 output.write(list.getKey() + "\n");
                 for (Product product : list.getValue()) {
@@ -121,7 +121,7 @@ public class SupportClass {
     public static void DataSave(Context context) {
         try {
             OutputStream file = context.openFileOutput(SAVE_DATA, Context.MODE_PRIVATE);
-            OutputStreamWriter output = new OutputStreamWriter(file , "utf8");
+            OutputStreamWriter output = new OutputStreamWriter(file, "utf8");
             output.write(MainActivity.user_weight);
             output.write(MainActivity.user_height);
             output.write(MainActivity.user_age);
@@ -149,11 +149,7 @@ public class SupportClass {
 
     public static int GetKallIsDB(String name, boolean flag) {
         Cursor cursor;
-        if (flag) {
-            cursor = MainActivity.mDb.rawQuery("SELECT * FROM products WHERE name=\"" + name + "\"", null);
-        } else {
-            cursor = MainActivity.mDb.rawQuery("SELECT * FROM exercises WHERE name=\"" + name + "\"", null);
-        }
+        cursor = MainActivity.mDb.rawQuery("SELECT * FROM " + (flag ? "products" : "exercises") + " WHERE name=\"" + name + "\"", null);
         cursor.moveToFirst();
         int kall = cursor.getInt(1);
         cursor.close();

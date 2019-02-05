@@ -97,11 +97,9 @@ public class RegistratorFragment extends Fragment {
     }
 
     void SaveData() {
-        if (MainActivity.user_gender == -1) {
-            getActivity().findViewById(R.id.navigation_home).setEnabled(true);
-            getActivity().findViewById(R.id.navigation_recd).setEnabled(true);
-            getActivity().findViewById(R.id.navigation_spent).setEnabled(true);
-        }
+        getActivity().findViewById(R.id.navigation_home).setEnabled(true);
+        getActivity().findViewById(R.id.navigation_recd).setEnabled(true);
+        getActivity().findViewById(R.id.navigation_spent).setEnabled(true);
         MainActivity.user_gender = gender;
         MainActivity.user_age = Integer.parseInt(age.getText().toString());
         MainActivity.user_height = Integer.parseInt(height.getText().toString());

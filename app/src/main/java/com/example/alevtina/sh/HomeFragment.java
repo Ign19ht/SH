@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class HomeFragment extends Fragment {
 
     private static TextView countRecdView, countSpentView, resultView;
@@ -21,8 +23,8 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, null);
 
-        countRecdView = (TextView)view.findViewById(R.id.countrecd);
-        countSpentView = (TextView)view.findViewById(R.id.countspent);
+        countRecdView = (TextView) view.findViewById(R.id.countrecd);
+        countSpentView = (TextView) view.findViewById(R.id.countspent);
         resultView = (TextView) view.findViewById(R.id.result);
         profile = view.findViewById(R.id.profile);
 
@@ -48,13 +50,22 @@ public class HomeFragment extends Fragment {
     }
 
     private static void SetCounts() {
-            countRecd = 0;
-            countSpent = 0;
-        for (int i = 0; i < SecondFragment.selectProducts.size(); i++) {
-            countRecd += SupportClass.KallCalculator(SecondFragment.selectProducts.get(i).getkall(), SecondFragment.selectProducts.get(i).getgramm(), true);
+        countRecd = 0;
+        countSpent = 0;
+        ArrayList<Product> list = new ArrayList<>();
+        String time = SupportClass.GetTime();
+        if (SecondFragment.selectProducts.containsKey(time)) {
+            list.addAll(SecondFragment.selectProducts.get(time));
+            for (int i = 0; i < list.size(); i++) {
+                countRecd += SupportClass.KallCalculator(list.get(i).getkall(), list.get(i).getgramm(), true);
+            }
         }
-        for (int i = 0; i < SecondFragment.selectExercises.size(); i++) {
-            countSpent += SupportClass.KallCalculator(SecondFragment.selectExercises.get(i).getkall(), SecondFragment.selectExercises.get(i).getgramm(), false);
+        list.clear();
+        if (SecondFragment.selectExercises.containsKey(time)) {
+            list.addAll(SecondFragment.selectExercises.get(time));
+            for (int i = 0; i < list.size(); i++) {
+                countSpent += SupportClass.KallCalculator(list.get(i).getkall(), list.get(i).getgramm(), false);
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ public class SecondFragment extends Fragment {
     static boolean visible = false, order = true;
     public static HashMap<String, ArrayList<Product>> selectProducts = new HashMap<>();
     public static HashMap<String, ArrayList<Product>> selectExercises = new HashMap<>();
-    private ArrayList<Product> selectFields = new ArrayList<>();
+    private static ArrayList<Product> selectFields = new ArrayList<>();
     static RecyclerView recyclerView;
     static private MainAdapter adapter;
     private TextView textView, cancel, deleteAll, date;
@@ -56,21 +56,24 @@ public class SecondFragment extends Fragment {
         nextDate = view.findViewById(R.id.next_date);
         date = view.findViewById(R.id.date);
 
-        if(flag) {
-            textView.setText("Продукты");
-        } else {
-            textView.setText("Упражнения");
-        }
+        textView.setText(flag ? "Продукты" : "Упражнения");
 
-        date.setText(SupportClass.GetTime());
+        String today = SupportClass.GetNewDate(flag ? stepProducts : stepExercises);
+        date.setText(today);
+
+        selectFields.clear();
 
         if (flag) {
-            selectFields.addAll(selectProducts.get(SupportClass.GetTime()));
+            if (selectProducts.containsKey(today)) {
+                selectFields.addAll(selectProducts.get(today));
+            }
         } else {
-            selectFields.addAll(selectExercises.get(SupportClass.GetTime()));
+            if (selectExercises.containsKey(today)) {
+                selectFields.addAll(selectExercises.get(today));
+            }
         }
 
-        adapter = new MainAdapter(selectFields, false);
+        adapter = new MainAdapter(selectFields, flag);
         recyclerView = view.findViewById(R.id.mainrecyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -81,6 +84,17 @@ public class SecondFragment extends Fragment {
     }
 
     public static void DataChange() {
+        String today = SupportClass.GetNewDate(flag ? stepProducts : stepExercises);
+        selectFields.clear();
+        if (flag) {
+            if (selectProducts.containsKey(today)) {
+                selectFields.addAll(selectProducts.get(today));
+            }
+        } else {
+            if (selectExercises.containsKey(today)) {
+                selectFields.addAll(selectExercises.get(today));
+            }
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -90,25 +104,17 @@ public class SecondFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         boolean order = true;
-                        if (flag) {
-                            if (stepProducts + 1 == 8) order = false;
-                        } else {
-                            if (stepExercises + 1 == 8) order = false;
-                        }
+                        if ((flag ? stepProducts : stepExercises) + 1 == 8) order = false;
                         if (order) {
                             if (flag) {
-                                stepProducts ++;
+                                stepProducts++;
                                 String day = SupportClass.GetNewDate(stepProducts);
                                 date.setText(day);
-                                selectFields.clear();
-                                selectFields.addAll(selectProducts.get(day));
                                 DataChange();
                             } else {
-                                stepExercises ++;
+                                stepExercises++;
                                 String day = SupportClass.GetNewDate(stepExercises);
                                 date.setText(day);
-                                selectFields.clear();
-                                selectFields.addAll(selectExercises.get(day));
                                 DataChange();
                             }
                         }
@@ -120,25 +126,17 @@ public class SecondFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         boolean order = true;
-                        if (flag) {
-                            if (stepProducts - 1 == -15) order = false;
-                        } else {
-                            if (stepExercises - 1 == -15) order = false;
-                        }
+                        if ((flag ? stepProducts : stepExercises) - 1 == -15) order = false;
                         if (order) {
                             if (flag) {
-                                stepProducts --;
+                                stepProducts--;
                                 String day = SupportClass.GetNewDate(stepProducts);
                                 date.setText(day);
-                                selectFields.clear();
-                                selectFields.addAll(selectProducts.get(day));
                                 DataChange();
                             } else {
-                                stepExercises --;
+                                stepExercises--;
                                 String day = SupportClass.GetNewDate(stepExercises);
                                 date.setText(day);
-                                selectFields.clear();
-                                selectFields.addAll(selectExercises.get(day));
                                 DataChange();
                             }
                         }
@@ -201,10 +199,11 @@ public class SecondFragment extends Fragment {
                                                 edit.setVisibility(View.VISIBLE);
                                                 addFiled.setVisibility(View.VISIBLE);
                                                 visible = false;
+                                                String time = SupportClass.GetNewDate(flag ? stepProducts : stepExercises);
                                                 if (flag) {
-                                                    selectProducts.clear();
+                                                    selectProducts.get(time).clear();
                                                 } else {
-                                                    selectExercises.clear();
+                                                    selectExercises.get(time).clear();
                                                 }
                                                 DataChange();
 //                                                SupportClass.SetDataSaves(getActivity());
