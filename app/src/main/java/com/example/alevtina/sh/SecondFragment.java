@@ -163,7 +163,6 @@ public class SecondFragment extends Fragment {
                         visible = true;
                         order = false;
                         DataChange();
-                        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                     }
                 }
         );

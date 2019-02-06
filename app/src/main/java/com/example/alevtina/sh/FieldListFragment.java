@@ -66,7 +66,6 @@ public class FieldListFragment extends Fragment {
                     public void onClick(View v) {
                         adapter.checkproduct.clear();
                         getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new SecondFragment(flag)).commit();
-                        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                     }
                 }
         );
@@ -80,7 +79,6 @@ public class FieldListFragment extends Fragment {
                             adapter.checkproduct.clear();
                             SecondFragment.DataChange();
                             getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new SecondFragment(flag)).commit();
-                            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                         } else {
                             Toast.makeText(getActivity(), "Вы ничего не выбрали!", Toast.LENGTH_SHORT)
                                     .show();
@@ -118,7 +116,9 @@ public class FieldListFragment extends Fragment {
                 fields.clear();
                 SetArrayList();
                 adapter.notifyDataSetChanged();
-                findClear.setVisibility(View.VISIBLE);
+                if (find.getText().length() != 0) {
+                    findClear.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

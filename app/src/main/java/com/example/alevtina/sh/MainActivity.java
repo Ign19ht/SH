@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mDBHelper = new DatabaseHelper(this);
+        bottomNavigationView = findViewById(R.id.navigation);
 
         try {
             mDBHelper.updateDataBase();
@@ -64,18 +65,17 @@ public class MainActivity extends AppCompatActivity {
 
         SupportClass.ReadData(this);
 
+        ListenerOnButton();
+
         if (user_gender == -1) {
             getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new RegistratorFragment()).commit();
             findViewById(R.id.navigation_home).setEnabled(false);
             findViewById(R.id.navigation_recd).setEnabled(false);
             findViewById(R.id.navigation_spent).setEnabled(false);
         } else {
-            getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new HomeFragment()).commit();
+//            getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new HomeFragment()).commit();
+            findViewById(R.id.navigation_home).performClick();
         }
-
-        bottomNavigationView = findViewById(R.id.navigation);
-
-        ListenerOnButton();
     }
 
     void ListenerOnButton() {
@@ -86,16 +86,14 @@ public class MainActivity extends AppCompatActivity {
                         switch (menuItem.getItemId()) {
                             case R.id.navigation_home:
                                 getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new HomeFragment()).commit();
-                                HomeFragment.SetStats();
-                                break;
+                                return  true;
                             case R.id.navigation_recd:
                                 getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new SecondFragment(true)).commit();
-                                break;
+                                return  true;
                             case R.id.navigation_spent:
                                 getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new SecondFragment(false)).commit();
-                                break;
+                                return  true;
                         }
-                        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                         return false;
                     }
                 }
