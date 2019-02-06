@@ -53,18 +53,22 @@ public class HomeFragment extends Fragment {
         countRecd = 0;
         countSpent = 0;
         ArrayList<Product> list = new ArrayList<>();
-        String time = SupportClass.GetTime();
-        if (SecondFragment.selectProducts.containsKey(time)) {
-            list.addAll(SecondFragment.selectProducts.get(time));
+        String date = SupportClass.GetDate();
+        if (SecondFragment.selectProducts.containsKey(date)) {
+            list.addAll(SecondFragment.selectProducts.get(date));
             for (int i = 0; i < list.size(); i++) {
-                countRecd += SupportClass.KallCalculator(list.get(i).getkall(), list.get(i).getgramm(), true);
+                int kall = list.get(i).getkall();
+                int gramm = list.get(i).getgramm();
+                countRecd += SupportClass.KallCalculator(kall, gramm, true);
             }
         }
         list.clear();
-        if (SecondFragment.selectExercises.containsKey(time)) {
-            list.addAll(SecondFragment.selectExercises.get(time));
+        if (SecondFragment.selectExercises.containsKey(date)) {
+            list.addAll(SecondFragment.selectExercises.get(date));
             for (int i = 0; i < list.size(); i++) {
-                countSpent += SupportClass.KallCalculator(list.get(i).getkall(), list.get(i).getgramm(), false);
+                int kall = list.get(i).getkall();
+                int gramm = list.get(i).getgramm();
+                countSpent += SupportClass.KallCalculator(kall, gramm, false);
             }
         }
     }

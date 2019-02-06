@@ -50,6 +50,7 @@ public class FieldListFragment extends Fragment {
         SetArrayList();
 
         adapter = new ItemAdapter(fields, flag);
+        adapter.checked = new boolean[fields.size()];
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
@@ -65,7 +66,8 @@ public class FieldListFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         adapter.checkproduct.clear();
-                        getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new SecondFragment(flag)).commit();
+                        getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT,
+                                new SecondFragment(flag)).commit();
                     }
                 }
         );
@@ -78,10 +80,11 @@ public class FieldListFragment extends Fragment {
                             SetSelectList(adapter.checkproduct);
                             adapter.checkproduct.clear();
                             SecondFragment.DataChange();
-                            getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new SecondFragment(flag)).commit();
+                            getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT,
+                                    new SecondFragment(flag)).commit();
                         } else {
-                            Toast.makeText(getActivity(), "Вы ничего не выбрали!", Toast.LENGTH_SHORT)
-                                    .show();
+                            Toast.makeText(getActivity(), "Вы ничего не выбрали!",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -113,55 +116,62 @@ public class FieldListFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 findName = find.getText().toString();
-                fields.clear();
                 SetArrayList();
+                adapter.checked = new boolean[fields.size()];
                 adapter.notifyDataSetChanged();
                 if (find.getText().length() != 0) {
                     findClear.setVisibility(View.VISIBLE);
+                } else {
+                    findClear.setVisibility(View.INVISIBLE);
                 }
             }
         });
     }
 
     void SetArrayList() {
+        fields.clear();
         Cursor cursor;
-        cursor = MainActivity.mDb.rawQuery("SELECT * FROM " + (flag ? "products" : "exercises"), null);
+        cursor = MainActivity.mDb.rawQuery("SELECT * FROM " + (flag ? "products" : "exercises"),
+                null);
         cursor.moveToFirst();
         if (findName.length() == 0) {
             while (!cursor.isAfterLast()) {
-                fields.add(new Product(cursor.getInt(1), cursor.getString(0)));
+                int kall = cursor.getInt(1);
+                String name = cursor.getString(0);
+                fields.add(new Product(kall, name));
                 cursor.moveToNext();
             }
-            cursor.close();
         } else {
             while (!cursor.isAfterLast()) {
-                int index = cursor.getString(0).lastIndexOf(findName);
+                int kall = cursor.getInt(1);
+                String name = cursor.getString(0);
+                int index = name.lastIndexOf(findName);
                 findName = findName.substring(0, 1).toUpperCase() + findName.substring(1);
-                int index2 = cursor.getString(0).lastIndexOf(findName);
+                int index2 = name.lastIndexOf(findName);
                 if (index != -1 || index2 != -1) {
-                    fields.add(new Product(cursor.getInt(1), cursor.getString(0)));
+                    fields.add(new Product(kall, name));
                 }
                 cursor.moveToNext();
             }
-            cursor.close();
         }
+        cursor.close();
     }
 
     void SetSelectList(HashMap<String, Integer> data) {
-        String time;
+        String date;
         if (flag) {
-            time = SupportClass.GetNewDate(SecondFragment.stepProducts);
+            date = SupportClass.GetDate(SecondFragment.stepProducts);
         } else {
-            time = SupportClass.GetNewDate(SecondFragment.stepExercises);
+            date = SupportClass.GetDate(SecondFragment.stepExercises);
         }
         ArrayList<Product> list = new ArrayList<>();
         if (flag) {
-            if (SecondFragment.selectProducts.containsKey(time)) {
-                list.addAll(SecondFragment.selectProducts.get(time));
+            if (SecondFragment.selectProducts.containsKey(date)) {
+                list.addAll(SecondFragment.selectProducts.get(date));
             }
         } else {
-            if (SecondFragment.selectExercises.containsKey(time)) {
-                list.addAll(SecondFragment.selectExercises.get(time));
+            if (SecondFragment.selectExercises.containsKey(date)) {
+                list.addAll(SecondFragment.selectExercises.get(date));
             }
         }
         for (Map.Entry<String, Integer> dat : data.entrySet()) {
@@ -169,10 +179,10 @@ public class FieldListFragment extends Fragment {
             list.add(new Product(kall, dat.getKey(), dat.getValue()));
         }
         if (flag) {
-            SecondFragment.selectProducts.put(time, list);
+            SecondFragment.selectProducts.put(date, list);
             SupportClass.ProductSave(getActivity());
         } else {
-            SecondFragment.selectExercises.put(time, list);
+            SecondFragment.selectExercises.put(date, list);
             SupportClass.ExerciseSave(getActivity());
         }
     }

@@ -52,6 +52,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     @Override
     public void onBindViewHolder(@NonNull final MainViewHolder mainViewHolder, final int i) {
         final Product product = products.get(i);
+        final int kall = product.getkall();
+        final String name = product.getname();
         mainViewHolder.attribute.setText(flag ? "г" : "ч");
         mainViewHolder.clear.setVisibility(SecondFragment.visible ? View.VISIBLE : View.INVISIBLE);
         mainViewHolder.amt.setEnabled(!SecondFragment.visible);
@@ -68,38 +70,26 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
             @Override
             public void afterTextChanged(Editable s) {
-                int grammint;
+                int gramm;
                 int temp;
-                if (mainViewHolder.amt.getText().length() == 0) grammint = 0;
-                else
-                    grammint = Integer.parseInt(mainViewHolder.amt.getText().toString());
-                temp = SupportClass.KallCalculator(product.getkall(), grammint, flag);
+                if (mainViewHolder.amt.getText().length() == 0) {
+                    gramm = 0;
+                }
+                else {
+                    gramm = Integer.parseInt(mainViewHolder.amt.getText().toString());
+                }
+                temp = SupportClass.KallCalculator(kall, gramm, flag);
                 mainViewHolder.kall.setText(Integer.toString(temp));
                 if (SecondFragment.order) {
                     ArrayList<Product> list = new ArrayList<>();
-                    String day = SupportClass.GetNewDate(flag ? SecondFragment.stepProducts : SecondFragment.stepExercises);
+                    String date = SupportClass.GetDate(flag ? SecondFragment.stepProducts : SecondFragment.stepExercises);
                     if (flag) {
-                        SecondFragment.selectProducts.get(day).set(i, new Product(product.getkall(), product.getname(), grammint));
+                        SecondFragment.selectProducts.get(date).set(i, new Product(kall, name, gramm));
                         SupportClass.ProductSave(mainViewHolder.itemView.getContext());
                     } else {
-                        SecondFragment.selectExercises.get(day).set(i, new Product(product.getkall(), product.getname(), grammint));
+                        SecondFragment.selectExercises.get(date).set(i, new Product(kall, name, gramm));
                         SupportClass.ExerciseSave(mainViewHolder.itemView.getContext());
                     }
-//                    try {
-//                        if (flag) {
-//                            list.addAll(SecondFragment.selectProducts.get(SupportClass.GetNewDate(SecondFragment.stepProducts)));
-//                            list.set(i, new Product(product.getkall(), product.getname(), grammint));
-//                            SecondFragment.selectProducts.put(SupportClass.GetNewDate(SecondFragment.stepProducts), list);
-//                            SupportClass.ProductSave(mainViewHolder.itemView.getContext());
-//                        } else {
-//                            list.addAll(SecondFragment.selectExercises.get(SupportClass.GetNewDate(SecondFragment.stepExercises)));
-//                            list.set(i, new Product(product.getkall(), product.getname(), grammint));
-//                            SecondFragment.selectExercises.put(SupportClass.GetNewDate(SecondFragment.stepExercises), list);
-//                            SupportClass.ExerciseSave(mainViewHolder.itemView.getContext());
-//                        }
-//                    } catch (Exception e) {
-//
-//                    }
                 }
             }
         });
@@ -108,22 +98,19 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             @Override
             public void onClick(View v) {
                 ArrayList<Product> list = new ArrayList<>();
+                String date = SupportClass.GetDate(flag ? SecondFragment.stepProducts : SecondFragment.stepExercises);
                 if (flag) {
-                    list.addAll(SecondFragment.selectProducts.get(SupportClass.GetNewDate(SecondFragment.stepProducts)));
-                    list.remove(i);
-                    SecondFragment.selectProducts.put(SupportClass.GetNewDate(SecondFragment.stepProducts), list);
+                    SecondFragment.selectProducts.get(date).remove(i);
                     SupportClass.ProductSave(mainViewHolder.itemView.getContext());
                 } else {
-                    list.addAll(SecondFragment.selectExercises.get(SupportClass.GetNewDate(SecondFragment.stepExercises)));
-                    list.remove(i);
-                    SecondFragment.selectExercises.put(SupportClass.GetNewDate(SecondFragment.stepExercises), list);
+                    SecondFragment.selectExercises.get(date).remove(i);
                     SupportClass.ExerciseSave(mainViewHolder.itemView.getContext());
                 }
                 SecondFragment.DataChange();
             }
         });
-        mainViewHolder.name.setText(product.getname());
-        mainViewHolder.kall.setText(Integer.toString(product.getkall()));
+        mainViewHolder.name.setText(name);
+        mainViewHolder.kall.setText(Integer.toString(kall));
         mainViewHolder.amt.setText(Integer.toString(product.getgramm()));
     }
 

@@ -43,44 +43,60 @@ public class SupportClass {
             MainActivity.user_gender = input.read();
             input.close();
         } catch (Exception e) {
+            System.out.println("ERROR IN READ DATA :");
+            e.printStackTrace();
         }
         try {
             InputStream file = context.openFileInput(SupportClass.SAVE_PRODUCT);
             InputStreamReader input = new InputStreamReader(file, "utf8");
             BufferedReader buffer = new BufferedReader(input);
-            String time = buffer.readLine();
-            String line = buffer.readLine();
             ArrayList<Product> list = new ArrayList<>();
-            while (line != null) {
-                if (line == "|") {
-                    SecondFragment.selectProducts.put(time, list);
+            String time = buffer.readLine();
+            String name = buffer.readLine();
+            while (name != null) {
+                if (name.equals("|")) {
+                    ArrayList<Product> array = new ArrayList<>();
+                    array.addAll(list);
+                    SecondFragment.selectProducts.put(time, array);
+                    time = buffer.readLine();
                     list.clear();
                 } else {
-                    list.add(new Product(GetKallIsDB(line, true), line, Integer.parseInt(buffer.readLine())));
+                    int kall = GetKallIsDB(name, true);
+                    int gramm = Integer.parseInt(buffer.readLine());
+                    list.add(new Product(kall, name, gramm));
                 }
-                line = buffer.readLine();
+                name = buffer.readLine();
             }
             buffer.close();
         } catch (Exception e) {
+            System.out.println("ERROR IN READ PRODUCTS :");
+            e.printStackTrace();
         }
         try {
             InputStream file = context.openFileInput(SupportClass.SAVE_EXERCISE);
             InputStreamReader input = new InputStreamReader(file, "utf8");
             BufferedReader buffer = new BufferedReader(input);
-            String time = buffer.readLine();
-            String line = buffer.readLine();
             ArrayList<Product> list = new ArrayList<>();
-            while (line != null) {
-                if (line == "|") {
-                    SecondFragment.selectExercises.put(time, list);
+            String time = buffer.readLine();
+            String name = buffer.readLine();
+            while (name != null) {
+                if (name.equals("|")) {
+                    ArrayList<Product> array = new ArrayList<>();
+                    array.addAll(list);
+                    SecondFragment.selectExercises.put(time, array);
+                    time = buffer.readLine();
                     list.clear();
                 } else {
-                    list.add(new Product(GetKallIsDB(line, false), line, Integer.parseInt(buffer.readLine())));
+                    int kall = GetKallIsDB(name, false);
+                    int gramm = Integer.parseInt(buffer.readLine());
+                    list.add(new Product(kall, name, gramm));
                 }
-                line = buffer.readLine();
+                name = buffer.readLine();
             }
             buffer.close();
         } catch (Exception e) {
+            System.out.println("ERROR IN READ EXERCISES :");
+            e.printStackTrace();
         }
     }
 
@@ -98,6 +114,8 @@ public class SupportClass {
             }
             output.close();
         } catch (Exception e) {
+            System.out.println("ERROR IN PRODUCST SAVE :");
+            e.printStackTrace();
         }
     }
 
@@ -115,6 +133,8 @@ public class SupportClass {
             }
             output.close();
         } catch (Exception e) {
+            System.out.println("ERROR IN EXERCISES SAVE :");
+            e.printStackTrace();
         }
     }
 
@@ -128,28 +148,32 @@ public class SupportClass {
             output.write(MainActivity.user_gender);
             output.close();
         } catch (Exception e) {
-            System.out.println("Ошибка");
+            System.out.println("ERROR IN DATA SAVE :");
             e.printStackTrace();
         }
     }
 
-    public static String GetNewDate(int countDay) {
+    public static String GetDate(int countDay) {
         Date today = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(today);
         calendar.add(Calendar.DATE, countDay);
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        String newDate = format.format(calendar.getTime());
-        return newDate;
+        String date = format.format(calendar.getTime());
+        return date;
     }
 
-    public static String GetTime() {
-        return new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(new Date());
+    public static String GetDate() {
+        Date today = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        String date = dateFormat.format(today);
+        return date;
     }
 
     public static int GetKallIsDB(String name, boolean flag) {
         Cursor cursor;
-        cursor = MainActivity.mDb.rawQuery("SELECT * FROM " + (flag ? "products" : "exercises") + " WHERE name=\"" + name + "\"", null);
+        cursor = MainActivity.mDb.rawQuery("SELECT * FROM " + (flag ? "products" : "exercises")
+                + " WHERE name=\"" + name + "\"", null);
         cursor.moveToFirst();
         int kall = cursor.getInt(1);
         cursor.close();

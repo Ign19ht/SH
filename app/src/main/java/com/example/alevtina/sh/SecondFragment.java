@@ -33,7 +33,7 @@ public class SecondFragment extends Fragment {
     private static ArrayList<Product> selectFields = new ArrayList<>();
     static RecyclerView recyclerView;
     static private MainAdapter adapter;
-    private TextView textView, cancel, deleteAll, date;
+    private TextView textView, cancel, deleteAll, dateView;
     private Button addFiled, edit, pasteDate, nextDate;
     static int stepProducts = 0, stepExercises = 0;
 
@@ -54,12 +54,12 @@ public class SecondFragment extends Fragment {
         cancel = view.findViewById(R.id.cancel);
         pasteDate = view.findViewById(R.id.past_date);
         nextDate = view.findViewById(R.id.next_date);
-        date = view.findViewById(R.id.date);
+        dateView = view.findViewById(R.id.date);
 
         textView.setText(flag ? "Продукты" : "Упражнения");
 
-        String today = SupportClass.GetNewDate(flag ? stepProducts : stepExercises);
-        date.setText(today);
+        String today = SupportClass.GetDate(flag ? stepProducts : stepExercises);
+        dateView.setText(today);
 
         selectFields.clear();
 
@@ -84,15 +84,15 @@ public class SecondFragment extends Fragment {
     }
 
     public static void DataChange() {
-        String today = SupportClass.GetNewDate(flag ? stepProducts : stepExercises);
+        String date = SupportClass.GetDate(flag ? stepProducts : stepExercises);
         selectFields.clear();
         if (flag) {
-            if (selectProducts.containsKey(today)) {
-                selectFields.addAll(selectProducts.get(today));
+            if (selectProducts.containsKey(date)) {
+                selectFields.addAll(selectProducts.get(date));
             }
         } else {
-            if (selectExercises.containsKey(today)) {
-                selectFields.addAll(selectExercises.get(today));
+            if (selectExercises.containsKey(date)) {
+                selectFields.addAll(selectExercises.get(date));
             }
         }
         adapter.notifyDataSetChanged();
@@ -108,15 +108,12 @@ public class SecondFragment extends Fragment {
                         if (order) {
                             if (flag) {
                                 stepProducts++;
-                                String day = SupportClass.GetNewDate(stepProducts);
-                                date.setText(day);
-                                DataChange();
                             } else {
                                 stepExercises++;
-                                String day = SupportClass.GetNewDate(stepExercises);
-                                date.setText(day);
-                                DataChange();
                             }
+                            String date = SupportClass.GetDate(flag ? stepProducts : stepExercises);
+                            dateView.setText(date);
+                            DataChange();
                         }
                     }
                 }
@@ -130,15 +127,12 @@ public class SecondFragment extends Fragment {
                         if (order) {
                             if (flag) {
                                 stepProducts--;
-                                String day = SupportClass.GetNewDate(stepProducts);
-                                date.setText(day);
-                                DataChange();
                             } else {
                                 stepExercises--;
-                                String day = SupportClass.GetNewDate(stepExercises);
-                                date.setText(day);
-                                DataChange();
                             }
+                            String date = SupportClass.GetDate(flag ? stepProducts : stepExercises);
+                            dateView.setText(date);
+                            DataChange();
                         }
                     }
                 }
@@ -148,7 +142,6 @@ public class SecondFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new FieldListFragment(flag)).commit();
-                        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                     }
                 }
         );
@@ -198,11 +191,11 @@ public class SecondFragment extends Fragment {
                                                 edit.setVisibility(View.VISIBLE);
                                                 addFiled.setVisibility(View.VISIBLE);
                                                 visible = false;
-                                                String time = SupportClass.GetNewDate(flag ? stepProducts : stepExercises);
+                                                String date = SupportClass.GetDate(flag ? stepProducts : stepExercises);
                                                 if (flag) {
-                                                    selectProducts.get(time).clear();
+                                                    selectProducts.get(date).clear();
                                                 } else {
-                                                    selectExercises.get(time).clear();
+                                                    selectExercises.get(date).clear();
                                                 }
                                                 DataChange();
 //                                                SupportClass.SetDataSaves(getActivity());

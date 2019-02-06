@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.navigation_recd).setEnabled(false);
             findViewById(R.id.navigation_spent).setEnabled(false);
         } else {
-//            getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new HomeFragment()).commit();
             findViewById(R.id.navigation_home).performClick();
         }
     }
@@ -85,13 +84,16 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.navigation_home:
-                                getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new HomeFragment()).commit();
+                                getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT,
+                                        new HomeFragment()).commit();
                                 return  true;
                             case R.id.navigation_recd:
-                                getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new SecondFragment(true)).commit();
+                                getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT,
+                                        new SecondFragment(true)).commit();
                                 return  true;
                             case R.id.navigation_spent:
-                                getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new SecondFragment(false)).commit();
+                                getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT,
+                                        new SecondFragment(false)).commit();
                                 return  true;
                         }
                         return false;
