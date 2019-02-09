@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -18,7 +19,8 @@ import java.io.PrintStream;
 
 public class RegistratorFragment extends Fragment {
 
-    private Button man, women, saveUser;
+    private Button saveUser;
+    private ImageButton man, women;
     private EditText age, height, weight;
     private boolean clickGender = false;
     private int gender;
@@ -28,12 +30,15 @@ public class RegistratorFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_registrator, null);
 
-        man = (Button) view.findViewById(R.id.man);
-        women = (Button) view.findViewById(R.id.women);
+        man = view.findViewById(R.id.man);
+        women = view.findViewById(R.id.women);
         saveUser = (Button) view.findViewById(R.id.saveuser);
         age = (EditText) view.findViewById(R.id.age);
         height = (EditText) view.findViewById(R.id.height);
         weight = (EditText) view.findViewById(R.id.weight);
+
+        man.setBackgroundResource(0);
+        women.setBackgroundResource(0);
 
         Listener();
 
@@ -46,9 +51,9 @@ public class RegistratorFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         clickGender = true;
-                        man.setBackgroundColor(Color.argb(0, 0, 255, 0));
-                        women.setBackgroundColor(Color.argb(0, 255, 0, 0));
                         gender = 1;
+                        man.setBackgroundResource(R.drawable.mycolor);
+                        women.setBackgroundResource(0);
                     }
                 }
         );
@@ -57,9 +62,9 @@ public class RegistratorFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         clickGender = true;
-                        women.setBackgroundColor(Color.argb(0, 0, 255, 0));
-                        man.setBackgroundColor(Color.argb(0, 255, 0, 0));
                         gender = 0;
+                        women.setBackgroundResource(R.drawable.mycolor);
+                        man.setBackgroundResource(0);
                     }
                 }
         );

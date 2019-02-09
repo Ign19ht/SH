@@ -2,12 +2,14 @@ package com.example.alevtina.sh;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.view.View;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,73 +32,6 @@ public class SupportClass {
         } else {
             total = kall * gramm * MainActivity.user_weight;
             return total;
-        }
-    }
-
-    public static void ReadData(Context context) {
-        try {
-            InputStream file = context.openFileInput(SupportClass.SAVE_DATA);
-            InputStreamReader input = new InputStreamReader(file, "utf8");
-            MainActivity.user_weight = input.read();
-            MainActivity.user_height = input.read();
-            MainActivity.user_age = input.read();
-            MainActivity.user_gender = input.read();
-            input.close();
-        } catch (Exception e) {
-            System.out.println("ERROR IN READ DATA :");
-            e.printStackTrace();
-        }
-        try {
-            InputStream file = context.openFileInput(SupportClass.SAVE_PRODUCT);
-            InputStreamReader input = new InputStreamReader(file, "utf8");
-            BufferedReader buffer = new BufferedReader(input);
-            ArrayList<Product> list = new ArrayList<>();
-            String time = buffer.readLine();
-            String name = buffer.readLine();
-            while (name != null) {
-                if (name.equals("|")) {
-                    ArrayList<Product> array = new ArrayList<>();
-                    array.addAll(list);
-                    SecondFragment.selectProducts.put(time, array);
-                    time = buffer.readLine();
-                    list.clear();
-                } else {
-                    int kall = GetKallIsDB(name, true);
-                    int gramm = Integer.parseInt(buffer.readLine());
-                    list.add(new Product(kall, name, gramm));
-                }
-                name = buffer.readLine();
-            }
-            buffer.close();
-        } catch (Exception e) {
-            System.out.println("ERROR IN READ PRODUCTS :");
-            e.printStackTrace();
-        }
-        try {
-            InputStream file = context.openFileInput(SupportClass.SAVE_EXERCISE);
-            InputStreamReader input = new InputStreamReader(file, "utf8");
-            BufferedReader buffer = new BufferedReader(input);
-            ArrayList<Product> list = new ArrayList<>();
-            String time = buffer.readLine();
-            String name = buffer.readLine();
-            while (name != null) {
-                if (name.equals("|")) {
-                    ArrayList<Product> array = new ArrayList<>();
-                    array.addAll(list);
-                    SecondFragment.selectExercises.put(time, array);
-                    time = buffer.readLine();
-                    list.clear();
-                } else {
-                    int kall = GetKallIsDB(name, false);
-                    int gramm = Integer.parseInt(buffer.readLine());
-                    list.add(new Product(kall, name, gramm));
-                }
-                name = buffer.readLine();
-            }
-            buffer.close();
-        } catch (Exception e) {
-            System.out.println("ERROR IN READ EXERCISES :");
-            e.printStackTrace();
         }
     }
 
@@ -163,6 +98,21 @@ public class SupportClass {
         return date;
     }
 
+    public static boolean CompareDates(String string) {
+        Calendar today = Calendar.getInstance();
+        today.add(Calendar.DATE, -15);
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        Calendar calendar = Calendar.getInstance();
+        Date day;
+        try {
+            day = format.parse(string);
+            calendar.setTime(day);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return calendar.before(today);
+    }
+
     public static String GetDate() {
         Date today = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
@@ -178,5 +128,11 @@ public class SupportClass {
         int kall = cursor.getInt(1);
         cursor.close();
         return kall;
+    }
+
+    public static void ViewVisibility(boolean visible, View[] view) {
+        for (int i = 0; i < view.length; i++) {
+            view[i].setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        }
     }
 }

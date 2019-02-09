@@ -34,8 +34,9 @@ public class SecondFragment extends Fragment {
     static RecyclerView recyclerView;
     static private MainAdapter adapter;
     private TextView textView, cancel, deleteAll, dateView;
-    private Button addFiled, edit, pasteDate, nextDate;
+    private Button addFiled, pasteDate, nextDate, refresh;
     static int stepProducts = 0, stepExercises = 0;
+    private static Button edit;
 
     @SuppressLint("ValidFragment")
     public SecondFragment(boolean flag) {
@@ -55,6 +56,7 @@ public class SecondFragment extends Fragment {
         pasteDate = view.findViewById(R.id.past_date);
         nextDate = view.findViewById(R.id.next_date);
         dateView = view.findViewById(R.id.date);
+        refresh = view.findViewById(R.id.refresh);
 
         textView.setText(flag ? "Продукты" : "Упражнения");
 
@@ -71,6 +73,14 @@ public class SecondFragment extends Fragment {
             if (selectExercises.containsKey(today)) {
                 selectFields.addAll(selectExercises.get(today));
             }
+        }
+
+        if (selectFields.size() == 0) {
+            edit.setVisibility(View.INVISIBLE);
+        }
+
+        if ((flag ? stepProducts : stepExercises) != 0) {
+            refresh.setVisibility(View.VISIBLE);
         }
 
         adapter = new MainAdapter(selectFields, flag);
@@ -95,10 +105,28 @@ public class SecondFragment extends Fragment {
                 selectFields.addAll(selectExercises.get(date));
             }
         }
+        edit.setVisibility(selectFields.size() == 0 ? View.INVISIBLE : View.VISIBLE);
         adapter.notifyDataSetChanged();
     }
 
     void Listener() {
+        refresh.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SupportClass.ViewVisibility(true, new View[]{edit, addFiled});
+                        SupportClass.ViewVisibility(false, new View[]{refresh});
+                        if(flag) {
+                            stepProducts = 0;
+                        } else {
+                            stepExercises = 0;
+                        }
+                        String date = SupportClass.GetDate();
+                        dateView.setText(date);
+                        DataChange();
+                    }
+                }
+        );
         nextDate.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -114,6 +142,15 @@ public class SecondFragment extends Fragment {
                             String date = SupportClass.GetDate(flag ? stepProducts : stepExercises);
                             dateView.setText(date);
                             DataChange();
+                            if ((flag ? stepProducts : stepExercises) >= 0 && selectFields.size() != 0) {
+                                SupportClass.ViewVisibility(true, new View[]{edit, addFiled});
+                            }
+
+                            if ((flag ? stepProducts : stepExercises) == 0) {
+                                refresh.setVisibility(View.INVISIBLE);
+                            } else {
+                                refresh.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
                 }
@@ -133,6 +170,14 @@ public class SecondFragment extends Fragment {
                             String date = SupportClass.GetDate(flag ? stepProducts : stepExercises);
                             dateView.setText(date);
                             DataChange();
+                            if ((flag ? stepProducts : stepExercises) < 0) {
+                                SupportClass.ViewVisibility(false, new View[]{edit, addFiled});
+                            }
+                            if ((flag ? stepProducts : stepExercises) == 0) {
+                                refresh.setVisibility(View.INVISIBLE);
+                            } else {
+                                refresh.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
                 }
@@ -149,13 +194,11 @@ public class SecondFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        deleteAll.setVisibility(View.VISIBLE);
-                        cancel.setVisibility(View.VISIBLE);
-                        edit.setVisibility(View.INVISIBLE);
-                        addFiled.setVisibility(View.INVISIBLE);
                         visible = true;
                         order = false;
                         DataChange();
+                        SupportClass.ViewVisibility(true, new View[]{deleteAll, cancel});
+                        SupportClass.ViewVisibility(false, new View[]{addFiled, refresh, edit});
                     }
                 }
         );
@@ -163,10 +206,11 @@ public class SecondFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        deleteAll.setVisibility(View.INVISIBLE);
-                        cancel.setVisibility(View.INVISIBLE);
-                        edit.setVisibility(View.VISIBLE);
+                        SupportClass.ViewVisibility(false, new View[]{deleteAll, cancel});
                         addFiled.setVisibility(View.VISIBLE);
+                        if ((flag ? stepProducts : stepExercises) != 0) {
+                            refresh.setVisibility(View.VISIBLE);
+                        }
                         visible = false;
                         DataChange();
                         order = true;
@@ -186,10 +230,8 @@ public class SecondFragment extends Fragment {
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                deleteAll.setVisibility(View.INVISIBLE);
-                                                cancel.setVisibility(View.INVISIBLE);
-                                                edit.setVisibility(View.VISIBLE);
-                                                addFiled.setVisibility(View.VISIBLE);
+                                                SupportClass.ViewVisibility(false, new View[]{deleteAll, cancel});
+                                                SupportClass.ViewVisibility(true, new View[]{addFiled, edit});
                                                 visible = false;
                                                 String date = SupportClass.GetDate(flag ? stepProducts : stepExercises);
                                                 if (flag) {
@@ -198,7 +240,12 @@ public class SecondFragment extends Fragment {
                                                     selectExercises.get(date).clear();
                                                 }
                                                 DataChange();
-//                                                SupportClass.SetDataSaves(getActivity());
+                                                if (flag) {
+                                                    SupportClass.ProductSave(getActivity());
+                                                } else {
+                                                    SupportClass.ExerciseSave(getActivity());
+                                                }
+
                                             }
                                         })
                                 .setNegativeButton("Отменить",

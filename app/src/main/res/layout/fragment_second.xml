@@ -53,6 +53,14 @@
         android:textSize="16dp"
         android:layout_marginRight="5dp"/>
 
+    <Button
+        android:id="@+id/refresh"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:visibility="invisible"
+        android:background="@drawable/ic_refresh_black_24dp"
+        android:layout_marginLeft="5dp"/>
+
     <TextView
         android:id="@+id/cancel"
         android:layout_width="60dp"
