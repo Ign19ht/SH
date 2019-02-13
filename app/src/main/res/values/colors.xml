@@ -6,4 +6,6 @@
     <color name="secondColor">#000000</color>
     <color name="mainColor">#f2dab8</color>
     <color name="iconColor">#44413d</color>
+    <color name="itemColor">#fff5e8</color>
+    <color name="navigationColor">#f2ce9f</color>
 </resources>

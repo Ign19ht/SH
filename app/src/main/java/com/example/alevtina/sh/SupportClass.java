@@ -49,7 +49,7 @@ public class SupportClass {
             }
             output.close();
         } catch (Exception e) {
-            System.out.println("ERROR IN PRODUCST SAVE :");
+            System.out.println("ERROR IN PRODUCTS SAVE :");
             e.printStackTrace();
         }
     }

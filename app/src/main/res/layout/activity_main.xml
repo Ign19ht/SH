@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-
-
     <FrameLayout
         android:id="@+id/frgmCont"
         android:layout_width="match_parent"
@@ -15,13 +13,19 @@
         android:layout_marginBottom="60dp"
         android:background="@color/mainColor">
 
+        <TextView
+            android:id="@+id/psholnahyi"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"/>
+
     </FrameLayout>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="?android:attr/windowBackground"
+        android:background="@color/navigationColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
