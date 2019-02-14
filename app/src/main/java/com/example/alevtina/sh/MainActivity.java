@@ -1,19 +1,13 @@
 package com.example.alevtina.sh;
 
+import android.content.Intent;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,19 +15,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener, StepListener {
+public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
     private DatabaseHelper mDBHelper;
     public static SQLiteDatabase mDb;
     final static int ID_FRAGMENT = R.id.frgmCont;
-    public static int user_age = 1, user_height = 1, user_weight = 1, user_gender = -1;
-    private StepDetector simpleStepDetector;
-    private SensorManager sensorManager;
-    private Sensor accel;
-    private static final String TEXT_NUM_STEPS = "Number of Steps: ";
-    private int numSteps = 0;
-    TextView pholnahyi;
+    public static int user_age = 1, user_height = 1, user_weight = 1, user_gender = -1, step = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +30,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         mDBHelper = new DatabaseHelper(this);
         bottomNavigationView = findViewById(R.id.navigation);
-        pholnahyi = findViewById(R.id.psholnahyi);
+
+        startService(new Intent(this, MyService.class));
 
         try {
             mDBHelper.updateDataBase();
@@ -61,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ArrayList<String> keys = new ArrayList<>();
 
         for (Map.Entry<String, ArrayList<Product>> list : SecondFragment.selectProducts.entrySet()) {
-            if (SupportClass.CompareDates(list.getKey())) {
+            if (SupportClass.CompareDates(list.getKey(), 15)) {
                 keys.add(list.getKey());
             }
         }
@@ -72,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         keys.clear();
 
         for (Map.Entry<String, ArrayList<Product>> list : SecondFragment.selectExercises.entrySet()) {
-            if (SupportClass.CompareDates(list.getKey())) {
+            if (SupportClass.CompareDates(list.getKey(), 15)) {
                 keys.add(list.getKey());
             }
         }
@@ -94,32 +83,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else {
             findViewById(R.id.navigation_home).performClick();
         }
-
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        simpleStepDetector = new StepDetector();
-        simpleStepDetector.registerListener(this);
-
-        sensorManager.registerListener(MainActivity.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
-
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            simpleStepDetector.updateAccel(
-                    event.timestamp, event.values[0], event.values[1], event.values[2]);
-        }
-    }
-
-    @Override
-    public void step(long timeNs) {
-        numSteps++;
-        pholnahyi.setText(TEXT_NUM_STEPS + numSteps);
     }
 
     void ListenerOnButton() {
@@ -155,6 +118,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             MainActivity.user_height = input.read();
             MainActivity.user_age = input.read();
             MainActivity.user_gender = input.read();
+            BufferedReader buffer = new BufferedReader(input);
+            String today = buffer.readLine();
+            if (SupportClass.CompareDates(today, 2)) {
+                MyService.numSteps = 0;
+            }
             input.close();
         } catch (Exception e) {
             System.out.println("ERROR IN READ DATA :");

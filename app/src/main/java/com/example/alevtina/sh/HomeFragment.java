@@ -1,7 +1,5 @@
 package com.example.alevtina.sh;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +15,7 @@ public class HomeFragment extends Fragment {
     private static TextView countRecdView, countSpentView, resultView;
     private static int countRecd = 0, countSpent = 0;
     private Button profile;
+    private TextView stepCount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,6 +26,9 @@ public class HomeFragment extends Fragment {
         countSpentView = (TextView) view.findViewById(R.id.countspent);
         resultView = (TextView) view.findViewById(R.id.result);
         profile = view.findViewById(R.id.profile);
+        stepCount = view.findViewById(R.id.stepcount);
+
+        stepCount.setText(Integer.toString(MyService.numSteps));
 
         profile.setOnClickListener(
                 new View.OnClickListener() {

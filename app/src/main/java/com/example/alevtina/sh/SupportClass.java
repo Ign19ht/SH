@@ -3,10 +3,6 @@ package com.example.alevtina.sh;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.ParseException;
@@ -14,8 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class SupportClass {
@@ -81,6 +75,7 @@ public class SupportClass {
             output.write(MainActivity.user_height);
             output.write(MainActivity.user_age);
             output.write(MainActivity.user_gender);
+            output.write(SupportClass.GetDate());
             output.close();
         } catch (Exception e) {
             System.out.println("ERROR IN DATA SAVE :");
@@ -98,9 +93,9 @@ public class SupportClass {
         return date;
     }
 
-    public static boolean CompareDates(String string) {
+    public static boolean CompareDates(String string, int count) {
         Calendar today = Calendar.getInstance();
-        today.add(Calendar.DATE, -15);
+        today.add(Calendar.DATE, -count);
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         Calendar calendar = Calendar.getInstance();
         Date day;

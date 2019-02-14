@@ -88,6 +88,12 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/stepcount"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"/>
+
         <Button
             android:id="@+id/profile"
             android:layout_width="60dp"
