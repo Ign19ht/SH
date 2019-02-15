@@ -2,6 +2,7 @@ package com.example.alevtina.sh;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.CalendarContract;
 import android.view.View;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -75,7 +76,6 @@ public class SupportClass {
             output.write(MainActivity.user_height);
             output.write(MainActivity.user_age);
             output.write(MainActivity.user_gender);
-            output.write(SupportClass.GetDate());
             output.close();
         } catch (Exception e) {
             System.out.println("ERROR IN DATA SAVE :");
@@ -113,6 +113,22 @@ public class SupportClass {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         String date = dateFormat.format(today);
         return date;
+    }
+
+    public static boolean ItsToDay(String date) {
+        Date today = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        String toDay = format.format(today);
+        Date day;
+        try {
+            today = format.parse(toDay);
+            day = format.parse(date);
+            return today.equals(day);
+        } catch (Exception e) {
+            System.out.println("SPASI I SOHRANI");
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static int GetKallIsDB(String name, boolean flag) {

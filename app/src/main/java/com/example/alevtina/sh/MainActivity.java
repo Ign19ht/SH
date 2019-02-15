@@ -1,13 +1,17 @@
 package com.example.alevtina.sh;
 
-import android.content.Intent;
+import  android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     public static SQLiteDatabase mDb;
     final static int ID_FRAGMENT = R.id.frgmCont;
     public static int user_age = 1, user_height = 1, user_weight = 1, user_gender = -1, step = 0;
+    private final String FIRST_SAVE = "saved_first";
+    private boolean first;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +37,20 @@ public class MainActivity extends AppCompatActivity {
         mDBHelper = new DatabaseHelper(this);
         bottomNavigationView = findViewById(R.id.navigation);
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        first = sharedPreferences.getBoolean(FIRST_SAVE, true);
+
+
+//        StepDetector.STEP_THRESHOLD = 25f;
+
         startService(new Intent(this, MyService.class));
+
+//        if (first) {
+//            startService(new Intent(this, MyService.class));
+//            SharedPreferences.Editor ed = sharedPreferences.edit();
+//            ed.putBoolean(FIRST_SAVE, false);
+//            ed.commit();
+//        }
 
         try {
             mDBHelper.updateDataBase();
@@ -75,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
         ListenerOnButton();
 
-        if (user_gender == -1) {
+        if (first) {
             getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new RegistratorFragment()).commit();
             findViewById(R.id.navigation_home).setEnabled(false);
             findViewById(R.id.navigation_recd).setEnabled(false);
@@ -110,6 +129,29 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        save();
+        stopService(new Intent(this, MyService.class));
+//        StepDetector.STEP_THRESHOLD = 50f;
+//        Toast.makeText(this, "Good bye", Toast.LENGTH_SHORT).show();
+//        startService(new Intent(this, MyService.class));
+    }
+
+    void save() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor ed = sharedPreferences.edit();
+        ed.putInt(MyService.SAVED_TEXT, MyService.numSteps);
+        ed.putString(MyService.SAVED_DATE, SupportClass.GetDate());
+        ed.commit();
+    }
+
+    String load() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getString(MyService.SAVED_DATE, "09.05.1945");
+    }
+
     public void ReadData() {
         try {
             InputStream file = openFileInput(SupportClass.SAVE_DATA);
@@ -120,8 +162,9 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.user_gender = input.read();
             BufferedReader buffer = new BufferedReader(input);
             String today = buffer.readLine();
-            if (SupportClass.CompareDates(today, 2)) {
+            if (!SupportClass.ItsToDay(load())) {
                 MyService.numSteps = 0;
+                save();
             }
             input.close();
         } catch (Exception e) {

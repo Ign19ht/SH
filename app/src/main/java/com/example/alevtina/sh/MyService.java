@@ -1,6 +1,10 @@
 package com.example.alevtina.sh;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -9,6 +13,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 public class MyService extends Service implements SensorEventListener, StepListener{
 
@@ -16,21 +21,29 @@ public class MyService extends Service implements SensorEventListener, StepListe
     private SensorManager sensorManager;
     private Sensor accel;
     public static int numSteps;
-//    private static final int NOTIFY_ID = 101;
-    final String SAVED_TEXT = "saved_text";
+    private static final int NOTIFY_ID = 101;
+    final static String SAVED_TEXT = "saved_text";
+    final static String SAVED_DATE = "saved_date";
 
     public MyService() {
     }
 
+//    @Override
+//    public void onCreate() {
+//        super.onCreate();
+//
+//    }
+
     @Override
-    public void onCreate() {
-        super.onCreate();
+    public int onStartCommand(Intent intent, int flags, int startId) {
+//        Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show();
         load();
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         simpleStepDetector = new StepDetector();
         simpleStepDetector.registerListener(this);
         sensorManager.registerListener(MyService.this , accel, SensorManager.SENSOR_DELAY_FASTEST);
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -53,6 +66,7 @@ public class MyService extends Service implements SensorEventListener, StepListe
     @Override
     public void step(long timeNs) {
         numSteps++;
+//        Toast.makeText(this, Integer.toString(numSteps), Toast.LENGTH_SHORT).show();
         save();
 //        Intent notificationIntent = new Intent();
 //        PendingIntent contentIntent = PendingIntent.getActivity(this,
@@ -63,7 +77,7 @@ public class MyService extends Service implements SensorEventListener, StepListe
 //        builder.setContentIntent(contentIntent)
 //                // обязательные настройки
 //                .setSmallIcon(R.drawable.ic_refresh_black_24dp)
-//                .setContentTitle("Напоминание")
+//                .setContentTitle("Гиги За Шаги")
 //                .setContentText(Integer.toString(numSteps)); // Текст уведомления
 //                // необязательные настройки
 //        NotificationManager notificationManager =
@@ -80,6 +94,7 @@ public class MyService extends Service implements SensorEventListener, StepListe
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor ed = sharedPreferences.edit();
         ed.putInt(SAVED_TEXT, numSteps);
+        ed.putString(SAVED_DATE, SupportClass.GetDate());
         ed.commit();
     }
 }
