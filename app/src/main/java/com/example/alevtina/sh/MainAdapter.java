@@ -74,41 +74,44 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                 int temp;
                 if (mainViewHolder.amt.getText().length() == 0) {
                     gramm = 0;
-                }
-                else {
+                } else {
                     gramm = Integer.parseInt(mainViewHolder.amt.getText().toString());
                 }
                 temp = SupportClass.KallCalculator(kall, gramm, flag);
                 mainViewHolder.kall.setText(Integer.toString(temp));
-                if (SecondFragment.order) {
-                    ArrayList<Product> list = new ArrayList<>();
-                    String date = SupportClass.GetDate(flag ? SecondFragment.stepProducts : SecondFragment.stepExercises);
-                    if (flag) {
-                        SecondFragment.selectProducts.get(date).set(i, new Product(kall, name, gramm));
-                        SupportClass.ProductSave(mainViewHolder.itemView.getContext());
-                    } else {
-                        SecondFragment.selectExercises.get(date).set(i, new Product(kall, name, gramm));
-                        SupportClass.ExerciseSave(mainViewHolder.itemView.getContext());
+                try {
+                    if (SecondFragment.order) {
+                        ArrayList<Product> list = new ArrayList<>();
+                        String date = SupportClass.GetDate(flag ? SecondFragment.stepProducts : SecondFragment.stepExercises);
+                        if (flag) {
+                            SecondFragment.selectProducts.get(date).set(i, new Product(kall, name, gramm));
+                            SupportClass.ProductSave(mainViewHolder.itemView.getContext());
+                        } else {
+                            SecondFragment.selectExercises.get(date).set(i, new Product(kall, name, gramm));
+                            SupportClass.ExerciseSave(mainViewHolder.itemView.getContext());
+                        }
                     }
+                } catch (Exception e) {
+
                 }
             }
         });
         mainViewHolder.clear.setOnClickListener(
                 new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList<Product> list = new ArrayList<>();
-                String date = SupportClass.GetDate(flag ? SecondFragment.stepProducts : SecondFragment.stepExercises);
-                if (flag) {
-                    SecondFragment.selectProducts.get(date).remove(i);
-                    SupportClass.ProductSave(mainViewHolder.itemView.getContext());
-                } else {
-                    SecondFragment.selectExercises.get(date).remove(i);
-                    SupportClass.ExerciseSave(mainViewHolder.itemView.getContext());
-                }
-                SecondFragment.DataChange();
-            }
-        });
+                    @Override
+                    public void onClick(View v) {
+                        ArrayList<Product> list = new ArrayList<>();
+                        String date = SupportClass.GetDate(flag ? SecondFragment.stepProducts : SecondFragment.stepExercises);
+                        if (flag) {
+                            SecondFragment.selectProducts.get(date).remove(i);
+                            SupportClass.ProductSave(mainViewHolder.itemView.getContext());
+                        } else {
+                            SecondFragment.selectExercises.get(date).remove(i);
+                            SupportClass.ExerciseSave(mainViewHolder.itemView.getContext());
+                        }
+                        SecondFragment.DataChange();
+                    }
+                });
         mainViewHolder.name.setText(name);
         mainViewHolder.kall.setText(Integer.toString(kall));
         mainViewHolder.amt.setText(Integer.toString(product.getgramm()));

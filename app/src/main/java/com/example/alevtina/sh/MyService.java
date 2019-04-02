@@ -15,6 +15,8 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import java.util.concurrent.ExecutionException;
+
 public class MyService extends Service implements SensorEventListener, StepListener{
 
     private StepDetector simpleStepDetector;
@@ -66,6 +68,12 @@ public class MyService extends Service implements SensorEventListener, StepListe
     @Override
     public void step(long timeNs) {
         numSteps++;
+        try{
+            HomeFragment.stepCount.setText(Integer.toString(numSteps));
+        } catch (Exception e) {
+            e.getLocalizedMessage();
+        }
+
 //        Toast.makeText(this, Integer.toString(numSteps), Toast.LENGTH_SHORT).show();
         save();
 //        Intent notificationIntent = new Intent();

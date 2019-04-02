@@ -18,6 +18,7 @@ public class SupportClass {
     public static final String SAVE_DATA = "save_dats";
     public static final String SAVE_PRODUCT = "save_products";
     public static final String SAVE_EXERCISE = "save_exercises";
+    public static final String SAVE_WEIGHT = "save_weight";
 
     public static int KallCalculator(int kall, int gramm, boolean flag) {
         int total;
@@ -68,6 +69,20 @@ public class SupportClass {
         }
     }
 
+    public static void WeightSave(Context context) {
+        try {
+            OutputStream file = context.openFileOutput(SAVE_WEIGHT, Context.MODE_PRIVATE);
+            OutputStreamWriter output = new OutputStreamWriter(file, "utf8");
+            for (Map.Entry<String, Integer> item : HomeFragment.weightArray.entrySet()) {
+                output.write(item.getKey());
+                output.write(item.getValue());
+            }
+            output.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void DataSave(Context context) {
         try {
             OutputStream file = context.openFileOutput(SAVE_DATA, Context.MODE_PRIVATE);
@@ -76,6 +91,7 @@ public class SupportClass {
             output.write(MainActivity.user_height);
             output.write(MainActivity.user_age);
             output.write(MainActivity.user_gender);
+            output.write(MainActivity.target);
             output.close();
         } catch (Exception e) {
             System.out.println("ERROR IN DATA SAVE :");
@@ -90,6 +106,13 @@ public class SupportClass {
         calendar.add(Calendar.DATE, countDay);
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         String date = format.format(calendar.getTime());
+        return date;
+    }
+
+    public static String GetDate() {
+        Date today = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        String date = dateFormat.format(today);
         return date;
     }
 
@@ -108,12 +131,7 @@ public class SupportClass {
         return calendar.before(today);
     }
 
-    public static String GetDate() {
-        Date today = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        String date = dateFormat.format(today);
-        return date;
-    }
+
 
     public static boolean ItsToDay(String date) {
         Date today = new Date();

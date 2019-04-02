@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="4"
-            android:background="#FFFFFF"
+            android:background="@color/itemColor"
             app:srcCompat="@drawable/ic_add_circle_black_24dp"
             android:rotation="45"/>
 

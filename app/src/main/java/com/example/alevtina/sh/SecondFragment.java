@@ -33,8 +33,8 @@ public class SecondFragment extends Fragment {
     private static ArrayList<Product> selectFields = new ArrayList<>();
     static RecyclerView recyclerView;
     static private MainAdapter adapter;
-    private TextView textView, cancel, deleteAll, dateView;
-    private Button addFiled, pasteDate, nextDate, refresh;
+    private static TextView textView, cancel, deleteAll, dateView;
+    private static Button addFiled, pasteDate, nextDate, refresh;
     static int stepProducts = 0, stepExercises = 0;
     private static Button edit;
 
@@ -105,7 +105,10 @@ public class SecondFragment extends Fragment {
                 selectFields.addAll(selectExercises.get(date));
             }
         }
-        edit.setVisibility(selectFields.size() == 0 ? View.INVISIBLE : View.VISIBLE);
+        if (selectFields.size() == 0) {
+            SupportClass.ViewVisibility(false, new View[]{cancel, deleteAll, edit});
+            addFiled.setVisibility(View.VISIBLE);
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -207,7 +210,7 @@ public class SecondFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         SupportClass.ViewVisibility(false, new View[]{deleteAll, cancel});
-                        addFiled.setVisibility(View.VISIBLE);
+                        SupportClass.ViewVisibility(true, new View[]{addFiled, edit});
                         if ((flag ? stepProducts : stepExercises) != 0) {
                             refresh.setVisibility(View.VISIBLE);
                         }
@@ -240,6 +243,7 @@ public class SecondFragment extends Fragment {
                                                     selectExercises.get(date).clear();
                                                 }
                                                 DataChange();
+                                                order = true;
                                                 if (flag) {
                                                     SupportClass.ProductSave(getActivity());
                                                 } else {

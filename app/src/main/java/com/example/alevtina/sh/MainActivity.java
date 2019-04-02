@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper mDBHelper;
     public static SQLiteDatabase mDb;
     final static int ID_FRAGMENT = R.id.frgmCont;
-    public static int user_age = 1, user_height = 1, user_weight = 1, user_gender = -1, step = 0;
-    private final String FIRST_SAVE = "saved_first";
-    private boolean first;
+    public static int user_age = 1, user_height = 1, user_weight = 1, user_gender = -1, target = -1;
+    static final String FIRST_SAVE = "saved_first";
+    static boolean first;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         first = sharedPreferences.getBoolean(FIRST_SAVE, true);
-
-
-//        StepDetector.STEP_THRESHOLD = 25f;
 
         startService(new Intent(this, MyService.class));
 
@@ -136,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         stopService(new Intent(this, MyService.class));
 //        StepDetector.STEP_THRESHOLD = 50f;
 //        Toast.makeText(this, "Good bye", Toast.LENGTH_SHORT).show();
-//        startService(new Intent(this, MyService.class));
+        startService(new Intent(this, MyService.class));
     }
 
     void save() {
@@ -221,6 +218,20 @@ public class MainActivity extends AppCompatActivity {
             buffer.close();
         } catch (Exception e) {
             System.out.println("ERROR IN READ EXERCISES :");
+            e.printStackTrace();
+        }
+        try{
+            InputStream file = openFileInput(SupportClass.SAVE_WEIGHT);
+            InputStreamReader input = new InputStreamReader(file, "utf8");
+            BufferedReader buffer = new BufferedReader(input);
+            String date = buffer.readLine();
+            int weight;
+            while (date != null) {
+                weight = Integer.parseInt(buffer.readLine());
+                HomeFragment.weightArray.put(date, weight);
+                date = buffer.readLine();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

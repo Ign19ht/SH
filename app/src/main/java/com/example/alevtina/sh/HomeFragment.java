@@ -1,21 +1,38 @@
 package com.example.alevtina.sh;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
+    static HashMap<String, Integer> weightArray = new HashMap<>();
+
     private static TextView countRecdView, countSpentView, resultView;
     private static int countRecd = 0, countSpent = 0;
-    private Button profile;
-    private TextView stepCount;
+    private LinearLayout profile;
+    static TextView stepCount;
+    private TextView weight;
+    static View indicator;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,14 +44,24 @@ public class HomeFragment extends Fragment {
         resultView = (TextView) view.findViewById(R.id.result);
         profile = view.findViewById(R.id.profile);
         stepCount = view.findViewById(R.id.stepcount);
+        indicator = view.findViewById(R.id.indicator);
+        weight = view.findViewById(R.id.weight);
 
+        weight.setText(Integer.toString(MainActivity.user_weight) + " kg");
         stepCount.setText(Integer.toString(MyService.numSteps));
+
+        int i = 0;
+
+        for(Map.Entry<String, Integer> item : weightArray.entrySet()) {
+            i++;
+        }
 
         profile.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new RegistratorFragment()).commit();
+
                     }
                 }
         );
@@ -43,12 +70,20 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    static void SetColor(int sp, int rec){
+        if ((rec - sp >= 1950) && (rec-sp <= 2050)){
+            indicator.setBackgroundResource(R.drawable.indicator_green);
+        } else {
+            indicator.setBackgroundResource(R.drawable.indicator_red);
+        }
+    }
 
     static void SetStats() {
         SetCounts();
-        countRecdView.setText(Integer.toString(countRecd));
-        countSpentView.setText(Integer.toString(countSpent));
-        resultView.setText(Integer.toString(countRecd - countSpent));
+        countRecdView.setText(Integer.toString(countRecd) + " kkal");
+        countSpentView.setText(Integer.toString(countSpent) + " kkal");
+        resultView.setText(Integer.toString(Math.abs(countRecd - countSpent)) + " kkal");
+        SetColor(countSpent, countRecd);
     }
 
     private static void SetCounts() {

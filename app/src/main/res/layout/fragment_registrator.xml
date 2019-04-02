@@ -41,9 +41,9 @@
                 android:id="@+id/man"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginLeft="30dp"
-                android:src="@drawable/ic_men"
+                android:layout_marginLeft="50dp"
                 android:scaleType="centerCrop"
+                android:src="@drawable/ic_men"
                 android:textSize="30dp" />
 
             <TextView
@@ -80,7 +80,7 @@
                 android:id="@+id/height"
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="45dp"
                 android:hint="ваш рост"
                 android:inputType="number"
                 android:maxLength="3"
@@ -106,7 +106,7 @@
                 android:id="@+id/weight"
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="45dp"
                 android:hint="ваш вес"
                 android:inputType="number"
                 android:maxLength="3"
@@ -126,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Возраст:"
-                android:textSize="40dp" />
+                android:textSize="30dp" />
 
             <EditText
                 android:id="@+id/age"
@@ -140,13 +140,38 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Желаемый\n       вес:"
+                android:textSize="25dp" />
+
+            <EditText
+                android:id="@+id/target"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:hint="желаемый вес"
+                android:inputType="number"
+                android:maxLength="3"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/saveuser"
             android:layout_width="150dp"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:background="@android:color/holo_green_light"
+            android:background="@drawable/oval"
             android:text="Сохранить"
             android:textSize="20dp" />
 
