@@ -26,7 +26,7 @@ public class SupportClass {
             total = kall * gramm / 100;
             return total;
         } else {
-            total = kall * gramm * MainActivity.user_weight;
+            total = kall * gramm * HomeFragment.user_weight;
             return total;
         }
     }
@@ -87,16 +87,37 @@ public class SupportClass {
         try {
             OutputStream file = context.openFileOutput(SAVE_DATA, Context.MODE_PRIVATE);
             OutputStreamWriter output = new OutputStreamWriter(file, "utf8");
-            output.write(MainActivity.user_weight);
-            output.write(MainActivity.user_height);
-            output.write(MainActivity.user_age);
-            output.write(MainActivity.user_gender);
-            output.write(MainActivity.target);
+            output.write(HomeFragment.user_weight);
+            output.write(HomeFragment.user_height);
+            output.write(HomeFragment.user_age);
+            output.write(HomeFragment.user_gender);
+            output.write(HomeFragment.targetWeight);
             output.close();
         } catch (Exception e) {
             System.out.println("ERROR IN DATA SAVE :");
             e.printStackTrace();
         }
+    }
+
+    public static String GetDate(String todayString, int countDay) {
+        Calendar day = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        Date today;
+        try {
+            today = format.parse(todayString);
+            day.setTime(today);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        day.add(Calendar.DATE, countDay);
+        String date = format.format(day.getTime());
+        return date;
+    }
+
+    public static String ReverseDate(String date) {
+        String[] split = date.split("\\.");
+        String reverse = split[2] + "." + split[1] + "." + split[0];
+        return reverse;
     }
 
     public static String GetDate(int countDay) {

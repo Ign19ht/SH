@@ -1,180 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="10dp"
+        android:text="Введите ваши \n      данные"
+        android:textSize="40dp" />
+
+    <TextView
+        android:id="@+id/anser_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_marginLeft="10dp"
+        android:text="Пол"
+        android:textSize="40dp" />
+
+    <TextView
+        android:id="@+id/anser_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@id/anser_gender"
+        android:layout_marginTop="5dp"
+        android:text="Рост(см)"
+        android:textSize="40dp" />
+
+    <TextView
+        android:id="@+id/anser_weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@id/anser_height"
+        android:layout_marginTop="5dp"
+        android:text="Вес(кг)"
+        android:textSize="40dp" />
+
+    <TextView
+        android:id="@+id/anser_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@id/anser_weight"
+        android:layout_marginTop="5dp"
+        android:text="Возраст"
+        android:textSize="40dp" />
+
+    <TextView
+        android:id="@+id/anser_target"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@id/anser_age"
+        android:layout_marginTop="5dp"
+        android:text="Цель(вес)"
+        android:textSize="40dp" />
+
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_alignTop="@id/anser_gender"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:text="Введите ваши"
-            android:textSize="40dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="данные"
-            android:textSize="40dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Пол  :"
-                android:textSize="40dp" />
-
-            <ImageButton
-                android:id="@+id/man"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="50dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_men"
-                android:textSize="30dp" />
-
-            <TextView
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:text="/"
-                android:textAlignment="center"
-                android:textSize="40dp" />
-
-            <ImageButton
-                android:id="@+id/women"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_women"
-                android:textSize="30dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Рост :"
-                android:textSize="40dp" />
-
-            <EditText
-                android:id="@+id/height"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="45dp"
-                android:hint="ваш рост"
-                android:inputType="number"
-                android:maxLength="3"
-                android:textAlignment="center"
-                android:textSize="30dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Вес   :"
-                android:textSize="40dp" />
-
-            <EditText
-                android:id="@+id/weight"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="45dp"
-                android:hint="ваш вес"
-                android:inputType="number"
-                android:maxLength="3"
-                android:textAlignment="center"
-                android:textSize="30dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Возраст:"
-                android:textSize="30dp" />
-
-            <EditText
-                android:id="@+id/age"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="30dp"
-                android:hint="ваш возраст"
-                android:inputType="number"
-                android:maxLength="3"
-                android:textAlignment="center" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Желаемый\n       вес:"
-                android:textSize="25dp" />
-
-            <EditText
-                android:id="@+id/target"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:hint="желаемый вес"
-                android:inputType="number"
-                android:maxLength="3"
-                android:textAlignment="center" />
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/saveuser"
-            android:layout_width="150dp"
+        <ImageButton
+            android:id="@+id/man"
+            android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/oval"
-            android:text="Сохранить"
-            android:textSize="20dp" />
+            android:src="@drawable/ic_men" />
+
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:text="/"
+            android:textAlignment="center"
+            android:textSize="40dp" />
+
+        <ImageButton
+            android:id="@+id/women"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_women" />
 
     </LinearLayout>
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/height"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@id/anser_height"
+        android:layout_alignBottom="@id/anser_height"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:hint="ваш рост"
+        android:inputType="number"
+        android:maxLength="3"
+        android:textAlignment="center"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/weight"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/height"
+        android:layout_alignTop="@id/anser_weight"
+        android:layout_alignBottom="@id/anser_weight"
+        android:hint="ваш вес"
+        android:inputType="number"
+        android:maxLength="3"
+        android:textAlignment="center"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/age"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/height"
+        android:layout_alignTop="@id/anser_age"
+        android:layout_alignBottom="@id/anser_age"
+        android:hint="ваш возраст"
+        android:inputType="number"
+        android:maxLength="3"
+        android:textAlignment="center"
+        android:textSize="30dp" />
+
+    <EditText
+        android:id="@+id/target"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/height"
+        android:layout_alignTop="@id/anser_target"
+        android:layout_alignBottom="@id/anser_target"
+        android:hint="желаемый вес"
+        android:inputType="number"
+        android:maxLength="3"
+        android:textAlignment="center"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/saveuser"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/target"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/oval"
+        android:text="Сохранить"
+        android:textSize="20dp" />
+
+
+</RelativeLayout>

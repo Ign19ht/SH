@@ -42,22 +42,24 @@ public class RegistratorFragment extends Fragment {
         weight = (EditText) view.findViewById(R.id.weight);
         target = (EditText) view.findViewById(R.id.target);
 
+        man.setBackgroundResource(0);
+        women.setBackgroundResource(0);
+
         if (!MainActivity.first) {
-            age.setText(Integer.toString(MainActivity.user_age));
-            height.setText(Integer.toString(MainActivity.user_height));
-            weight.setText(Integer.toString(MainActivity.user_weight));
-            target.setText(Integer.toString(MainActivity.target));
-            if (MainActivity.user_gender == 1) {
+            age.setText(Integer.toString(HomeFragment.user_age));
+            height.setText(Integer.toString(HomeFragment.user_height));
+            weight.setText(Integer.toString(HomeFragment.user_weight));
+            target.setText(Integer.toString(HomeFragment.targetWeight));
+            if (HomeFragment.user_gender == 1) {
                 gender = 1;
                 man.setBackgroundResource(R.drawable.mycolor);
+                women.setBackgroundResource(0);
             } else {
                 gender = 0;
                 women.setBackgroundResource(R.drawable.mycolor);
+                man.setBackgroundResource(0);
             }
         }
-
-        man.setBackgroundResource(0);
-        women.setBackgroundResource(0);
 
         Listener();
 
@@ -111,6 +113,7 @@ public class RegistratorFragment extends Fragment {
                         else {
                             SaveData();
                             save_first();
+                            getActivity().findViewById(R.id.navigation_home).performClick();
                         }
                     }
                 }
@@ -133,16 +136,15 @@ public class RegistratorFragment extends Fragment {
         getActivity().findViewById(R.id.navigation_home).setEnabled(true);
         getActivity().findViewById(R.id.navigation_recd).setEnabled(true);
         getActivity().findViewById(R.id.navigation_spent).setEnabled(true);
-        MainActivity.user_gender = gender;
-        MainActivity.user_age = Integer.parseInt(age.getText().toString());
-        MainActivity.user_height = Integer.parseInt(height.getText().toString());
-        MainActivity.user_weight = Integer.parseInt(weight.getText().toString());
-        MainActivity.target = Integer.parseInt(target.getText().toString());
-        Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        String day = format.format(date);
-        HomeFragment.weightArray.put(day, Integer.parseInt(weight.getText().toString()));
-        getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new HomeFragment()).commit();
+        getActivity().findViewById(R.id.navigation_profil).setEnabled(true);
+        HomeFragment.user_gender = gender;
+        HomeFragment.user_age = Integer.parseInt(age.getText().toString());
+        HomeFragment.user_height = Integer.parseInt(height.getText().toString());
+        HomeFragment.user_weight = Integer.parseInt(weight.getText().toString());
+        HomeFragment.targetWeight = Integer.parseInt(target.getText().toString());
+        String date = SupportClass.GetDate();
+        date = SupportClass.ReverseDate(date);
+        HomeFragment.weightArray.put(date, Integer.parseInt(weight.getText().toString()));
         SupportClass.DataSave(getActivity());
         SupportClass.WeightSave(getActivity());
     }

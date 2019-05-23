@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper mDBHelper;
     public static SQLiteDatabase mDb;
     final static int ID_FRAGMENT = R.id.frgmCont;
-    public static int user_age = 1, user_height = 1, user_weight = 1, user_gender = -1, target = -1;
     static final String FIRST_SAVE = "saved_first";
     static boolean first;
 
@@ -41,13 +40,6 @@ public class MainActivity extends AppCompatActivity {
         first = sharedPreferences.getBoolean(FIRST_SAVE, true);
 
         startService(new Intent(this, MyService.class));
-
-//        if (first) {
-//            startService(new Intent(this, MyService.class));
-//            SharedPreferences.Editor ed = sharedPreferences.edit();
-//            ed.putBoolean(FIRST_SAVE, false);
-//            ed.commit();
-//        }
 
         try {
             mDBHelper.updateDataBase();
@@ -71,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        for (int i = 0; i < keys.size(); i++) {
-            SecondFragment.selectProducts.remove(keys.get(i));
+        for (String date : keys) {
+            SecondFragment.selectProducts.remove(date);
         }
         keys.clear();
 
@@ -82,8 +74,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        for (int i = 0; i < keys.size(); i++) {
-            SecondFragment.selectExercises.remove(keys.get(i));
+        for (String date : keys) {
+            SecondFragment.selectExercises.remove(date);
+        }
+
+        while (HomeFragment.weightArray.size() > 10) {
+            String date = HomeFragment.weightArray.firstKey();
+            HomeFragment.weightArray.remove(date);
         }
 
         SupportClass.ProductSave(this);
@@ -92,10 +89,11 @@ public class MainActivity extends AppCompatActivity {
         ListenerOnButton();
 
         if (first) {
-            getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT, new RegistratorFragment()).commit();
+            findViewById(R.id.navigation_profil).performClick();
             findViewById(R.id.navigation_home).setEnabled(false);
             findViewById(R.id.navigation_recd).setEnabled(false);
             findViewById(R.id.navigation_spent).setEnabled(false);
+            findViewById(R.id.navigation_profil).setEnabled(false);
         } else {
             findViewById(R.id.navigation_home).performClick();
         }
@@ -119,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
                                 getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT,
                                         new SecondFragment(false)).commit();
                                 return  true;
+                            case R.id.navigation_profil:
+                                getSupportFragmentManager().beginTransaction().replace(ID_FRAGMENT,
+                                        new RegistratorFragment()).commit();
+                                return  true;
                         }
                         return false;
                     }
@@ -131,8 +133,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         save();
         stopService(new Intent(this, MyService.class));
-//        StepDetector.STEP_THRESHOLD = 50f;
-//        Toast.makeText(this, "Good bye", Toast.LENGTH_SHORT).show();
         startService(new Intent(this, MyService.class));
     }
 
@@ -153,12 +153,11 @@ public class MainActivity extends AppCompatActivity {
         try {
             InputStream file = openFileInput(SupportClass.SAVE_DATA);
             InputStreamReader input = new InputStreamReader(file, "utf8");
-            MainActivity.user_weight = input.read();
-            MainActivity.user_height = input.read();
-            MainActivity.user_age = input.read();
-            MainActivity.user_gender = input.read();
-            BufferedReader buffer = new BufferedReader(input);
-            String today = buffer.readLine();
+            HomeFragment.user_weight = input.read();
+            HomeFragment.user_height = input.read();
+            HomeFragment.user_age = input.read();
+            HomeFragment.user_gender = input.read();
+            HomeFragment.targetWeight = input.read();
             if (!SupportClass.ItsToDay(load())) {
                 MyService.numSteps = 0;
                 save();
@@ -223,14 +222,18 @@ public class MainActivity extends AppCompatActivity {
         try{
             InputStream file = openFileInput(SupportClass.SAVE_WEIGHT);
             InputStreamReader input = new InputStreamReader(file, "utf8");
-            BufferedReader buffer = new BufferedReader(input);
-            String date = buffer.readLine();
-            int weight;
-            while (date != null) {
-                weight = Integer.parseInt(buffer.readLine());
+            char[] buffer = new char[10];
+            input.read(buffer, 0, 10);
+            String date = String.valueOf(buffer);
+            System.out.println(date);
+            int weight = input.read();
+            while (weight != -1) {
                 HomeFragment.weightArray.put(date, weight);
-                date = buffer.readLine();
+                input.read(buffer, 0, 10);
+                date = String.valueOf(buffer);
+                weight = input.read();
             }
+            input.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

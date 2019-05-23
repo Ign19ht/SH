@@ -69,7 +69,7 @@ public class MyService extends Service implements SensorEventListener, StepListe
     public void step(long timeNs) {
         numSteps++;
         try{
-            HomeFragment.stepCount.setText(Integer.toString(numSteps));
+            HomeFragment.SetStats();
         } catch (Exception e) {
             e.getLocalizedMessage();
         }
