@@ -9,11 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
+
         <service
             android:name=".MyService"
             android:enabled="true"
-            android:exported="true"></service>
-.
+            android:exported="true" />
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
@@ -23,10 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

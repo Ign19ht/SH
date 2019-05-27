@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/find_clear_pr"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:visibility="invisible"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="18dp"
+        android:layout_toLeftOf="@id/savecheked_pr"
+        android:background="@drawable/ic_add_circle_black_24dp"
+        android:rotation="45" />
+
+    <Button
+        android:id="@+id/backToMain_pr"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="5"
+        android:background="@drawable/ic_arrow_back_black_24dp" />
+
+    <EditText
+        android:id="@+id/find_pr"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="70dp"
+        android:hint="поиск"
+        android:inputType="text"
+        android:paddingRight="50dp"
+        android:paddingLeft="20dp" />
+
+    <Button
+        android:id="@+id/savecheked_pr"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/ic_done_black_24dp"
+        android:textSize="10dp" />
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginTop="60dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/all"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:text="все"
+                android:background="@drawable/oval"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/milk"
+                android:layout_width="100dp"
+                android:layout_marginLeft="5dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/oval"
+                android:text="Кисло - молочные"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/fruits"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:text="Фрукты и ягоды"
+                android:background="@drawable/oval"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/meet"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/oval"
+                android:text="мясо"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/vegan"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/oval"
+                android:text="овощи и орехи"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/drink"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/oval"
+                android:text="напитки"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/grass"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/oval"
+                android:text="травы, специи и грибы"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/sweets"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/oval"
+                android:layout_marginLeft="5dp"
+                android:text="сладости"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/bakes"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/oval"
+                android:layout_marginLeft="5dp"
+                android:text="выпечка"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/cereal"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/oval"
+                android:layout_marginLeft="5dp"
+                android:text="злаки, каши и паста"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/soup"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:background="@drawable/oval"
+                android:text="супы"
+                android:textColor="@android:color/white"/>
+
+            <Button
+                android:id="@+id/seafood"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/oval"
+                android:layout_marginLeft="5dp"
+                android:text="морепродукты"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_pr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="125dp"
+        tools:listitem="@layout/item">
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

@@ -2,10 +2,7 @@ package com.example.alevtina.sh;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.database.DatabaseUtils;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,13 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -189,7 +182,12 @@ public class SecondFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new FieldListFragment(flag)).commit();
+                        if (flag) {
+                            getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new FieldListProducts()).commit();
+                        } else{
+                            getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT, new FieldListExcercises()).commit();
+                        }
+
                     }
                 }
         );

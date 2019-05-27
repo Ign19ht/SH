@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SuppressLint("ValidFragment")
-public class FieldListFragment extends Fragment {
+public class FieldListExcercises extends Fragment {
 
     private RecyclerView recyclerView;
     private ItemAdapter adapter;
@@ -30,12 +30,6 @@ public class FieldListFragment extends Fragment {
     private EditText find;
     private ArrayList<Product> fields = new ArrayList<>();
     private String findName = "";
-    boolean flag;
-
-    @SuppressLint("ValidFragment")
-    public FieldListFragment(boolean flag) {
-        this.flag = flag;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,7 +43,7 @@ public class FieldListFragment extends Fragment {
 
         SetArrayList();
 
-        adapter = new ItemAdapter(fields, flag);
+        adapter = new ItemAdapter(fields, false); // sfdererfreferfcerferf
         adapter.checked = new boolean[fields.size()];
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -67,7 +61,7 @@ public class FieldListFragment extends Fragment {
                     public void onClick(View v) {
                         adapter.checkproduct.clear();
                         getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT,
-                                new SecondFragment(flag)).commit();
+                                new SecondFragment(false)).commit(); // sfcedfcercferc
                     }
                 }
         );
@@ -81,7 +75,7 @@ public class FieldListFragment extends Fragment {
                             adapter.checkproduct.clear();
                             SecondFragment.DataChange();
                             getFragmentManager().beginTransaction().replace(MainActivity.ID_FRAGMENT,
-                                    new SecondFragment(flag)).commit();
+                                    new SecondFragment(false)).commit(); // fcvedfcercfrfc
                         } else {
                             Toast.makeText(getActivity(), "Вы ничего не выбрали!",
                                     Toast.LENGTH_SHORT).show();
@@ -131,7 +125,7 @@ public class FieldListFragment extends Fragment {
     void SetArrayList() {
         fields.clear();
         Cursor cursor;
-        cursor = MainActivity.mDb.rawQuery("SELECT * FROM " + (flag ? "products" : "exercises"),
+        cursor = MainActivity.mDb.rawQuery("SELECT * FROM exercises", //sdfedfvrvrfvrfv
                 null);
         cursor.moveToFirst();
         if (findName.length() == 0) {
@@ -159,31 +153,22 @@ public class FieldListFragment extends Fragment {
 
     void SetSelectList(HashMap<String, Integer> data) {
         String date;
-        if (flag) {
-            date = SupportClass.GetDate(SecondFragment.stepProducts);
-        } else {
+//            date = SupportClass.GetDate(SecondFragment.stepProducts);
             date = SupportClass.GetDate(SecondFragment.stepExercises);
-        }
         ArrayList<Product> list = new ArrayList<>();
-        if (flag) {
-            if (SecondFragment.selectProducts.containsKey(date)) {
-                list.addAll(SecondFragment.selectProducts.get(date));
-            }
-        } else {
+//            if (SecondFragment.selectProducts.containsKey(date)) {
+//                list.addAll(SecondFragment.selectProducts.get(date));
+//            }
             if (SecondFragment.selectExercises.containsKey(date)) {
                 list.addAll(SecondFragment.selectExercises.get(date));
             }
-        }
         for (Map.Entry<String, Integer> dat : data.entrySet()) {
-            int kall = SupportClass.GetKallIsDB(dat.getKey(), flag);
+            int kall = SupportClass.GetKallIsDB(dat.getKey(), false); // sfhedbcdjcnd
             list.add(new Product(kall, dat.getKey(), dat.getValue()));
         }
-        if (flag) {
-            SecondFragment.selectProducts.put(date, list);
-            SupportClass.ProductSave(getActivity());
-        } else {
+//            SecondFragment.selectProducts.put(date, list);
+//            SupportClass.ProductSave(getActivity());
             SecondFragment.selectExercises.put(date, list);
             SupportClass.ExerciseSave(getActivity());
-        }
     }
 }
