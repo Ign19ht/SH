@@ -138,9 +138,19 @@ public class SecondFragment extends Fragment {
                             String date = SupportClass.GetDate(flag ? stepProducts : stepExercises);
                             dateView.setText(date);
                             DataChange();
-                            if ((flag ? stepProducts : stepExercises) >= 0 && selectFields.size() != 0) {
-                                SupportClass.ViewVisibility(true, new View[]{edit, addFiled});
+                            if ((flag ? stepProducts : stepExercises) >= 0) {
+                                addFiled.setVisibility(View.VISIBLE);
+                                if (selectFields.size() == 0) {
+                                    edit.setVisibility(View.INVISIBLE);
+                                } else {
+                                    edit.setVisibility(View.VISIBLE);
+                                }
+                            } else {
+                                SupportClass.ViewVisibility(false, new View[]{edit, addFiled});
                             }
+//                            if ((flag ? stepProducts : stepExercises) >= 0 && selectFields.size() != 0) {
+//                                SupportClass.ViewVisibility(true, new View[]{edit, addFiled});
+//                            }
 
                             if ((flag ? stepProducts : stepExercises) == 0) {
                                 refresh.setVisibility(View.INVISIBLE);
@@ -168,6 +178,12 @@ public class SecondFragment extends Fragment {
                             DataChange();
                             if ((flag ? stepProducts : stepExercises) < 0) {
                                 SupportClass.ViewVisibility(false, new View[]{edit, addFiled});
+                            } else {
+                                if (selectFields.size() == 0) {
+                                    edit.setVisibility(View.INVISIBLE);
+                                } else {
+                                    edit.setVisibility(View.VISIBLE);
+                                }
                             }
                             if ((flag ? stepProducts : stepExercises) == 0) {
                                 refresh.setVisibility(View.INVISIBLE);
